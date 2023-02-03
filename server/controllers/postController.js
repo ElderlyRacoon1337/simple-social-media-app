@@ -21,8 +21,6 @@ export const getAllPosts = async (req, res) => {
       currentPage: Number(page),
       numberOfPages: Math.ceil(total / LIMIT),
     });
-
-    res.json(posts);
   } catch (error) {
     res.status(500).json({ message: 'Не удалось получить посты' });
   }

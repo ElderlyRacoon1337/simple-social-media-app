@@ -1,0 +1,118 @@
+import { useState } from 'react';
+
+const Post = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="post block">
+      <div className="postTop">
+        <div className="postTopLeft">
+          <img
+            width="100%"
+            src="https://waggingmongrel.com/wp-content/uploads/2018/10/shutterstock_265071971.jpg"
+            alt=""
+          />
+          <div className="postUser">
+            <p>Павел Литов</p>
+            <div className="createdAt">1 янв в 10:30</div>
+          </div>
+        </div>
+        <div className="postTopRight">
+          <svg
+            onMouseEnter={() => setIsOpen(true)}
+            onMouseLeave={() => setIsOpen(false)}
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="postEdit w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+            />
+          </svg>
+          {isOpen && (
+            <div className="postPopup">
+              <p>Редактировать</p>
+              <p>Удалить</p>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="postContent">
+        <img
+          className="postImage"
+          src="https://wallbox.ru/wallpapers/main/201547/7150bd13bc02f44.jpg"
+          alt=""
+        />
+        <p className="postText">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim tenetur
+          ratione excepturi! Sint, explicabo quasi dicta pariatur nobis
+          voluptatem atque est nemo eligendi eveniet porro voluptate! Hic dolore
+          amet delectus.
+        </p>
+      </div>
+      <div className="postBottom">
+        <div className="postBottom__left">
+          <button className="button">
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+              />
+            </svg>
+            <p>12</p>
+          </button>
+          <button className="button">
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
+              />
+            </svg>
+            <p>4</p>
+          </button>
+        </div>
+        <div className="postBottom__right">
+          <svg
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+          <p className="viewsCount">123</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Post;

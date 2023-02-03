@@ -7,6 +7,7 @@ import multer from 'multer';
 import postRoutes from './routes/posts.js';
 import userRoutes from './routes/user.js';
 import isAuth from './middleware/auth.js';
+import createFolder from './middleware/createFolder.js';
 
 const app = express();
 
@@ -21,20 +22,34 @@ app.use(cors());
 
 // загрузка фото на сервер
 const storage = multer.diskStorage({
-  destination: (_, __, cb) => {
-    cb(null, 'uploads');
+  destination: (req, __, cb) => {
+    cb(null, `uploads/${req.userId || 'vd9dv88dv9d9sdv'}`);
   },
-  filename: (_, file, cb) => {
-    cb(null, file.originalname);
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname +
+        '-' +
+        uniqueSuffix +
+        '.' +
+        file.originalname.split('.')[1]
+    );
   },
 });
 const upload = multer({ storage });
 app.use('/uploads', express.static('uploads'));
-app.post('/upload', isAuth, upload.single('image'), (req, res) => {
-  res.json({
-    url: `/uploads/${req.file.originalname}`,
-  });
-});
+app.post(
+  '/upload',
+  isAuth,
+  createFolder,
+  upload.single('image'),
+  (req, res) => {
+    res.json({
+      url: `/uploads/${req.userId}/${req.file.originalname}`,
+    });
+  }
+);
 
 // обработка запросов
 app.use('/posts', postRoutes);

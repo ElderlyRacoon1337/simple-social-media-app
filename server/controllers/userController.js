@@ -22,7 +22,7 @@ export const signUp = async (req, res) => {
       passwordHash: hash,
     });
 
-    const token = jwt.sign({ email: user.email, id: user._id }, 'secret', {
+    const token = jwt.sign({ email: user.email, _id: user._id }, 'secret', {
       expiresIn: '7d',
     });
 
@@ -54,7 +54,7 @@ export const signIn = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { email: user._doc.email, id: user._doc._id },
+      { email: user._doc.email, _id: user._doc._id },
       'secret',
       {
         expiresIn: '7d',
@@ -92,5 +92,20 @@ export const getPostsByUser = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Не удалось получить статьи' });
+  }
+};
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.userId);
+    console.log(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
+    const { passwordHash, ...userData } = user._doc;
+
+    res.json({ ...userData });
+  } catch (err) {
+    res.status(500).json({ message: 'Нет доступа' });
   }
 };
