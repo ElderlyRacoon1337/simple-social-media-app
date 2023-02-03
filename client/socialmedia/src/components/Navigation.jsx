@@ -1,10 +1,16 @@
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import '../sass/app.scss';
 
 const Navigation = () => {
+  const user = useSelector((state) => state.user.userData);
+
   return (
     <ul className="navigation">
-      <Link to="/user" className="navigation__element">
+      <Link
+        to={user.length ? `/user/${user._id}` : '/'}
+        className="navigation__element"
+      >
         <svg
           fill="none"
           viewBox="0 0 24 24"

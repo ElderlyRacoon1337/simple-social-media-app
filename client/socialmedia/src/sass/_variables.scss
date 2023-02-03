@@ -3,12 +3,16 @@
 // colors
 $primary: #6e34f5;
 $secondary: #f4efff;
-$white: #ffffff;
+$white: #fff;
 $black: #000000;
 
 $text-grey: #626d7a;
 $grey-1: rgb(246, 246, 246);
 $grey-2: rgb(239, 239, 239);
+
+// $primary: rgb(234, 0, 102);
+// $grey-1: rgb(255, 246, 246);
+// $grey-2: rgb(255, 228, 228);
 
 // spasing
 $base-padding: 0.75rem;
@@ -22,3 +26,10 @@ $base-font-size: 1rem;
 $font-size-xs: $base-font-size * 0.6;
 $font-size-s: $base-font-size * 0.75;
 $font-size-l: $base-font-size * 1.5;
+
+$dprimary: #6e34f5;
+$dsecondary: #1d1d1d;
+
+$text-grey: #626d7a;
+$grey-1: rgb(246, 246, 246);
+$grey-2: rgb(239, 239, 239);

@@ -9,6 +9,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: 'http://localhost:5000/uploads/avatarPlaceholder.jpeg',
     },
+    additionalInfo: {
+      status: String,
+    },
+    friends: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,

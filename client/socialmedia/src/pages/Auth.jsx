@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { signIn, signUp } from '../redux/slices/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { redirect, useNavigate } from 'react-router-dom';
+import { getMe, signIn, signUp } from '../redux/slices/userSlice';
 
 const Auth = () => {
   const signUpDefault = {
@@ -16,7 +16,7 @@ const Auth = () => {
     password: '',
   };
 
-  const [isSignup, setIsSignup] = useState(true);
+  const [isSignup, setIsSignup] = useState(false);
   const [signUpData, setSignUpData] = useState(signUpDefault);
   const [signInData, setSignInData] = useState(signInDefault);
 
@@ -33,8 +33,11 @@ const Auth = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    isSignup ? dispatch(signUp(signUpData)) : dispatch(signIn(signInData));
-    navigate('/');
+    if (isSignup) {
+      dispatch(signUp(signUpData));
+    } else {
+      dispatch(signIn(signInData));
+    }
   };
 
   return (

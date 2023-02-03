@@ -7,26 +7,35 @@ const Header = () => {
   let isAuth = useSelector((state) =>
     Boolean(Object.keys(state.user.userData).length)
   );
+
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const user = useSelector((state) => state.user.userData);
+
+  const handleSwitch = () => {
+    const theme = document.documentElement.getAttribute('data-theme');
+    theme == 'light'
+      ? document.documentElement.setAttribute('data-theme', 'dark')
+      : document.documentElement.setAttribute('data-theme', 'light');
+    console.log(theme);
+  };
 
   return (
     <header className="header">
       <div className="container">
         <div className="header__content">
           <div className="header__logo">
-            <Link to="/user">SocialMedia</Link>
+            <Link to={user.length ? `/user/${user._id}` : '/'}>
+              SocialMedia
+            </Link>
           </div>
           <div className="header__right">
             {isAuth ? (
               <div className="header__right__userInfo">
-                <p className="header__fullName">Pavel Litov</p>
-                <img
-                  src="https://waggingmongrel.com/wp-content/uploads/2018/10/shutterstock_265071971.jpg"
-                  alt=""
-                  className="header__avatar"
-                />
+                <p className="header__fullName">{user.fullName}</p>
+                <img src={user.avatarUrl} alt="" className="header__avatar" />
               </div>
             ) : (
               <div className="header__right__authorization">
@@ -64,8 +73,15 @@ const Header = () => {
             </button>
             {isOpen && (
               <div className="settings__popup">
-                <div href="/">
-                  <p className="popup-element">Темный режим</p>
+                <div
+                  href="/"
+                  onClick={() => {
+                    setIsOpen(false);
+                  }}
+                >
+                  <p onClick={handleSwitch} className="popup-element">
+                    Темный режим
+                  </p>
                 </div>
                 {isAuth && (
                   <div href="/">
@@ -74,6 +90,7 @@ const Header = () => {
                         dispatch(logout());
                         localStorage.setItem('token', '');
                         navigate('/');
+                        setIsOpen(false);
                       }}
                       className="popup-element"
                     >

@@ -14,7 +14,8 @@ export const getAllPosts = async (req, res) => {
       .find()
       .sort({ _id: -1 })
       .limit(LIMIT)
-      .skip(startIndex);
+      .skip(startIndex)
+      .populate('user');
 
     res.json({
       data: posts,
@@ -32,7 +33,6 @@ export const createPost = async (req, res) => {
     const newPost = new postModel({
       ...post,
       user: req.userId,
-      createdAt: new Date().toLocaleString(),
     });
     await newPost.save();
     res.json({ messgage: 'Пост создан' });
@@ -46,11 +46,11 @@ export const deletePost = async (req, res) => {
   try {
     const postId = req.params.id;
 
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(404).send(`No post with id: ${id}`);
-
+    if (!mongoose.Types.ObjectId.isValid(postId))
+      return res.status(404).send(`No post with id: ${postId}`);
+    const post = await postModel.findById(postId);
     await postModel.findByIdAndDelete(postId);
-    res.json('Пост успешно удален');
+    res.json(post);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Не удалось удалить пост' });

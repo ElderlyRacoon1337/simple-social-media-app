@@ -10,15 +10,15 @@ const comment = new mongoose.Schema({
 });
 
 const postSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  text: { type: String, required: true },
+  text: { type: String },
   imageUrl: { type: String },
-  user: { type: mongoose.Schema.Types.ObjectId, required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
   likes: { type: [String], default: [] },
   comments: { type: [comment], default: [] },
+  viewsCount: { type: Number, default: 0 },
   createdAt: {
     type: Date,
-    default: new Date().toLocaleString(),
+    default: new Date().toLocaleString('ru'),
   },
 });
 

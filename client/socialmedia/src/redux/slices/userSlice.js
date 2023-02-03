@@ -13,13 +13,20 @@ export const signIn = createAsyncThunk('user/signin', async (values) => {
   return data;
 });
 
-export const getMe = createAsyncThunk('user/', async () => {
+export const getMe = createAsyncThunk('user', async () => {
   const { data } = await axios.get('/user');
+  return data;
+});
+
+export const fetchProfileData = createAsyncThunk('user/data', async (id) => {
+  const { data } = await axios.get(`${id}`);
   return data;
 });
 
 const initialState = {
   userData: {},
+  currentProfileData: {},
+  isOwn: false,
 };
 
 const userSlice = createSlice({
@@ -28,6 +35,12 @@ const userSlice = createSlice({
   reducers: {
     logout(state) {
       state.userData = {};
+    },
+    setOwn(state) {
+      state.isOwn = true;
+    },
+    setNotOwn(state) {
+      state.isOwn = false;
     },
   },
   extraReducers: (builder) => {
@@ -56,13 +69,24 @@ const userSlice = createSlice({
     });
     builder.addCase(getMe.fulfilled, (state, action) => {
       state.userData = action.payload;
+      state.currentProfileData = action.payload;
     });
     builder.addCase(getMe.rejected, (state) => {
       state.userData = [];
     });
+
+    builder.addCase(fetchProfileData.pending, (state) => {
+      state.currentProfileData = [];
+    });
+    builder.addCase(fetchProfileData.fulfilled, (state, action) => {
+      state.currentProfileData = action.payload;
+    });
+    builder.addCase(fetchProfileData.rejected, (state) => {
+      state.currentProfileData = [];
+    });
   },
 });
 
-export const { logout } = userSlice.actions;
+export const { logout, setOwn, setNotOwn } = userSlice.actions;
 
 export default userSlice.reducer;

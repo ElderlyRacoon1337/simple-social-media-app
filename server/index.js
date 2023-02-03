@@ -26,15 +26,7 @@ const storage = multer.diskStorage({
     cb(null, `uploads/${req.userId || 'vd9dv88dv9d9sdv'}`);
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname +
-        '-' +
-        uniqueSuffix +
-        '.' +
-        file.originalname.split('.')[1]
-    );
+    cb(null, file.originalname);
   },
 });
 const upload = multer({ storage });

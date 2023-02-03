@@ -5,7 +5,7 @@ import { fetchPosts } from '../redux/slices/postsSlice';
 import Navigation from '../components/Navigation';
 
 const News = () => {
-  const posts = useSelector((state) => state.posts);
+  const posts = useSelector((state) => state.posts.posts.data);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -20,9 +20,9 @@ const News = () => {
       <div className="news">
         <div className="news__left">
           <div className="allPosts">
-            <Post />
-            <Post />
-            <Post />
+            {posts.map((post) => (
+              <Post postData={post} />
+            ))}
           </div>
         </div>
         <div className="news__right"></div>

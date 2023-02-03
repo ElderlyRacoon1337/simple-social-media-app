@@ -6,8 +6,22 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   return data;
 });
 
+export const fetchPostsByUser = createAsyncThunk(
+  'posts/fetchMyPosts',
+  async (id) => {
+    const { data } = await axios.get(`${id}/posts`);
+    return data;
+  }
+);
+
+export const deletePost = createAsyncThunk('posts/delete', async (id) => {
+  const { data } = await axios.delete(`/posts/${id}`);
+  return data;
+});
+
 const initialState = {
   posts: [],
+  postsByUser: [],
 };
 
 const postsSlice = createSlice({
@@ -23,6 +37,22 @@ const postsSlice = createSlice({
     });
     builder.addCase(fetchPosts.rejected, (state) => {
       state.posts = [];
+    });
+
+    builder.addCase(fetchPostsByUser.pending, (state) => {
+      state.postsByUser = [];
+    });
+    builder.addCase(fetchPostsByUser.fulfilled, (state, action) => {
+      state.postsByUser = action.payload;
+    });
+    builder.addCase(fetchPostsByUser.rejected, (state) => {
+      state.postsByUser = [];
+    });
+
+    builder.addCase(deletePost.fulfilled, (state, action) => {
+      state.postsByUser = state.postsByUser.filter(
+        (el) => el._id !== action.payload._id
+      );
     });
   },
 });

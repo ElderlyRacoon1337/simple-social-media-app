@@ -1,8 +1,8 @@
 import Header from './components/Header';
 import Profile from './pages/Profile';
 import './sass/app.scss';
-import Navigation from './components/Navigation';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import News from './pages/News';
 import { useDispatch, useSelector } from 'react-redux';
 import Auth from './pages/Auth';
@@ -10,11 +10,15 @@ import { useEffect } from 'react';
 import { getMe } from './redux/slices/userSlice';
 
 function App() {
-  let isAuth = useSelector((state) =>
+  const isAuth = useSelector((state) =>
     Boolean(Object.keys(state.user.userData).length)
   );
 
+  const user = useSelector((state) => state.user.userData);
+
   const dispatch = useDispatch();
+
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     dispatch(getMe());
@@ -23,13 +27,26 @@ function App() {
   return (
     <BrowserRouter>
       <div className="wrapper">
-        <Header />
-        <div className="container">
-          <Routes>
-            <Route path="/" element={isAuth ? <Profile /> : <Auth />} />
-            <Route path="/user" element={<Profile />} />
-            <Route path="/news" element={<News />} />
-          </Routes>
+        <div className="theme-light">
+          <Header />
+          <div className="container">
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  isAuth ? <Navigate to={`/user/${user._id}`} /> : <Auth />
+                }
+              />
+              <Route path="/user/:id" element={<Profile />} />
+              <Route
+                path="/user"
+                element={
+                  isAuth ? <Navigate to={`/user/${user._id}`} /> : <Auth />
+                }
+              />
+              <Route path="/news" element={<News />} />
+            </Routes>
+          </div>
         </div>
       </div>
     </BrowserRouter>

@@ -87,7 +87,10 @@ export const getUser = async (req, res) => {
 export const getPostsByUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    const posts = await postModel.find({ user: userId });
+    const posts = await postModel
+      .find({ user: userId })
+      .sort([['createdAt', -1]])
+      .populate('user');
     res.json(posts);
   } catch (error) {
     console.log(error);
@@ -98,7 +101,6 @@ export const getPostsByUser = async (req, res) => {
 export const getMe = async (req, res) => {
   try {
     const user = await userModel.findById(req.userId);
-    console.log(req.userId);
     if (!user) {
       return res.status(404).json({ message: 'Пользователь не найден' });
     }
