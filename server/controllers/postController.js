@@ -125,13 +125,14 @@ export const commentPost = async (req, res) => {
     const comment = {
       user: user.fullName,
       text,
-      createdAt: new Date().toLocaleString(),
+      avatarUrl: user.avatarUrl,
+      createdAt: new Date(),
     };
     post.comments.push(comment);
 
     await postModel.findByIdAndUpdate(postId, post);
 
-    res.json({ success: true });
+    res.json({ ...comment, postId });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Не удалось добавить комментарий' });

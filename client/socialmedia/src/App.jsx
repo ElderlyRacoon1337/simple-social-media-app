@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Auth from './pages/Auth';
 import { useEffect } from 'react';
 import { getMe } from './redux/slices/userSlice';
+import Navigation from './components/Navigation';
+import NavigationEmpty from './components/skeletons/NavigationEmpty';
 
 function App() {
   const isAuth = useSelector((state) =>
@@ -26,10 +28,11 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="wrapper">
-        <div className="theme-light">
-          <Header />
-          <div className="container">
+      <div className="wrapper theme-light">
+        <Header />
+        <div className="container">
+          <div className="content">
+            {<Navigation />}
             <Routes>
               <Route
                 path="/"

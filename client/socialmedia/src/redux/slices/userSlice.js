@@ -27,6 +27,7 @@ const initialState = {
   userData: {},
   currentProfileData: {},
   isOwn: false,
+  isProfileLoading: true,
 };
 
 const userSlice = createSlice({
@@ -42,7 +43,11 @@ const userSlice = createSlice({
     setNotOwn(state) {
       state.isOwn = false;
     },
+    clearProfileData(state) {
+      state.currentProfileData = {};
+    },
   },
+
   extraReducers: (builder) => {
     builder.addCase(signUp.pending, (state) => {
       state.userData = [];
@@ -69,7 +74,7 @@ const userSlice = createSlice({
     });
     builder.addCase(getMe.fulfilled, (state, action) => {
       state.userData = action.payload;
-      state.currentProfileData = action.payload;
+      // state.currentProfileData = action.payload;
     });
     builder.addCase(getMe.rejected, (state) => {
       state.userData = [];
@@ -77,16 +82,20 @@ const userSlice = createSlice({
 
     builder.addCase(fetchProfileData.pending, (state) => {
       state.currentProfileData = [];
+      state.isProfileLoading = true;
     });
     builder.addCase(fetchProfileData.fulfilled, (state, action) => {
       state.currentProfileData = action.payload;
+      state.isProfileLoading = false;
     });
     builder.addCase(fetchProfileData.rejected, (state) => {
       state.currentProfileData = [];
+      state.isProfileLoading = true;
     });
   },
 });
 
-export const { logout, setOwn, setNotOwn } = userSlice.actions;
+export const { logout, setOwn, setNotOwn, clearProfileData } =
+  userSlice.actions;
 
 export default userSlice.reducer;

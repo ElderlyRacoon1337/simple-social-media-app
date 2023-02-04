@@ -1,58 +1,126 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import axios from '../axios';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { deletePost, fetchPostsByUser } from '../redux/slices/postsSlice';
+import {
+  addComment,
+  deletePost,
+  fetchPosts,
+  fetchPostsByUser,
+} from '../redux/slices/postsSlice';
+import decode from 'jwt-decode';
+import Comment from './Comment';
 
-const Post = ({ postData }) => {
+const Post = ({ postData, isOwnPage }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
   const dispatch = useDispatch();
+  const likeButton = useRef();
+  const [isLiked, setIsLiked] = useState(false);
+  const [likes, setLikes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const isPostsLoading = useSelector((state) => state.posts.isPostsLoading);
+  const [commentValue, setCommentValue] = useState('');
+  const userData = useSelector((state) => state.user.userData);
+
+  const token = localStorage.getItem('token');
+  const decodedToken = token ? decode(token) : '';
+  const userId = decodedToken._id;
+  const commentRef = useRef();
 
   const handleDelete = (id) => {
     setIsOpen(false);
     dispatch(deletePost(id));
-    // dispatch(fetchPostsByUser(location.pathname));
   };
 
-  const hancleEdit = () => {
+  const handleEdit = () => {
     setIsOpen(false);
+  };
+
+  const onLike = () => {
+    axios.patch(`/posts/${postData._id}/likePost`);
+
+    if (!isLiked) {
+      setLikes([...likes, userId]);
+    } else {
+      setLikes(likes.filter((id) => id !== userId));
+    }
+
+    setIsLiked(!isLiked);
+  };
+
+  useEffect(() => {
+    setIsLiked(Boolean(postData.likes.find((e) => e == userId)));
+
+    setLikes(postData.likes);
+  }, []);
+
+  useEffect(() => {
+    if (isLiked) {
+      likeButton.current.className = 'button liked';
+    } else {
+      likeButton.current.className = 'button';
+    }
+  }, [isLiked]);
+
+  const handleAddComment = () => {
+    // axios.post(`/posts/${postData._id}/commentPost`, { text: commentValue });
+    setCommentValue('');
+    dispatch(addComment({ id: postData._id, value: commentValue }));
+  };
+
+  const onClickComment = () => {
+    commentRef.current.className =
+      commentRef.current.className == 'comments hidden'
+        ? 'comments'
+        : 'comments hidden';
   };
 
   return (
     <>
-      {postData ? (
-        <div className="post block">
+      <div className="post block">
+        <div>
           <div className="postTop">
             <div className="postTopLeft">
               <img width="100%" src={postData.user.avatarUrl} alt="" />
               <div className="postUser">
                 <p>{postData.user.fullName}</p>
-                <div className="createdAt">{postData.createdAt}</div>
+                <div className="createdAt">
+                  {new Date(postData.createdAt).toLocaleString('ru', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                  })}
+                </div>
               </div>
             </div>
-            <div className="postTopRight">
-              <svg
-                onClick={() => setIsOpen(!isOpen)}
-                // onMouseLeave={() => setIsOpen(false)}
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="postEdit w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                />
-              </svg>
-              {isOpen && (
-                <div className="postPopup">
-                  <p onClick={hancleEdit}>Редактировать</p>
-                  <p onClick={() => handleDelete(postData._id)}>Удалить</p>
-                </div>
-              )}
-            </div>
+            {isOwnPage && (
+              <div className="postTopRight">
+                <svg
+                  onClick={() => setIsOpen(!isOpen)}
+                  // onMouseLeave={() => setIsOpen(false)}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="postEdit w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                  />
+                </svg>
+                {isOpen && (
+                  <div className="postPopup">
+                    <p onClick={handleEdit}>Редактировать</p>
+                    <p onClick={() => handleDelete(postData._id)}>Удалить</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           <div className="postContent">
             {postData.imageUrl ? (
@@ -64,7 +132,7 @@ const Post = ({ postData }) => {
           </div>
           <div className="postBottom">
             <div className="postBottom__left">
-              <button className="button">
+              <button className="button" ref={likeButton} onClick={onLike}>
                 <svg
                   fill="none"
                   viewBox="0 0 24 24"
@@ -78,9 +146,9 @@ const Post = ({ postData }) => {
                     d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
                   />
                 </svg>
-                <p>{postData.likes.length}</p>
+                <p>{likes.length}</p>
               </button>
-              <button className="button">
+              <button className="button" onClick={onClickComment}>
                 <svg
                   fill="none"
                   viewBox="0 0 24 24"
@@ -119,10 +187,24 @@ const Post = ({ postData }) => {
               <p className="viewsCount">{postData.viewsCount}</p>
             </div>
           </div>
+          <div ref={commentRef} className="comments hidden">
+            {postData.comments.map((comm) => (
+              <Comment commentData={comm} isOwnPage={isOwnPage} />
+            ))}
+            <div className="addComment">
+              <img src={userData.avatarUrl} alt="" />
+              <input
+                type="text"
+                value={commentValue}
+                onChange={(e) => setCommentValue(e.target.value)}
+              />
+              <button onClick={handleAddComment} className="button">
+                Добавить
+              </button>
+            </div>
+          </div>
         </div>
-      ) : (
-        ''
-      )}
+      </div>
     </>
   );
 };
