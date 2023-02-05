@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteComment, fetchPostsByUser } from '../redux/slices/postsSlice';
 import decode from 'jwt-decode';
+import { Link } from 'react-router-dom';
 
 const Comment = ({ commentData, isOwnPage, isMyPost, postId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,16 +19,18 @@ const Comment = ({ commentData, isOwnPage, isMyPost, postId }) => {
   const decodedToken = token ? decode(token) : '';
   const userId = decodedToken._id;
 
-  if (userId == commentData.userId) {
+  if (userId == commentData.user._id) {
     isMy = true;
   } else {
     isMy = false;
   }
 
+  console.log(commentData);
+
   return (
     <div className="comment">
       <div className="commentTop">
-        <div className="commentTopLeft">
+        <Link to={`/user/${commentData.user._id}`} className="commentTopLeft">
           <img
             className="commentAvatar"
             width="100%"
@@ -35,7 +38,7 @@ const Comment = ({ commentData, isOwnPage, isMyPost, postId }) => {
             alt=""
           />
           <div className="commentUser">
-            <p className="commentName">{commentData.user}</p>
+            <p className="commentName">{commentData.user.fullName}</p>
             <div className="comment-createdAt">
               {commentData.createdAt.length
                 ? new Date(commentData.createdAt).toLocaleString('ru', {
@@ -49,7 +52,7 @@ const Comment = ({ commentData, isOwnPage, isMyPost, postId }) => {
                 : 'Несколько секунд назад'}
             </div>
           </div>
-        </div>
+        </Link>
         {(isMyPost || isMy) && (
           <div className="postTopRight">
             <svg

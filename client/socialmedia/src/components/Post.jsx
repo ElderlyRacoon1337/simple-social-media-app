@@ -1,7 +1,7 @@
 import axios from '../axios';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   addComment,
   deletePost,
@@ -26,13 +26,11 @@ const Post = ({ postData, isOwnPage }) => {
   const commentRef = useRef();
 
   let isMyPost = false;
-  if (userId == postData.user._id) {
+  if (userId == postData?.user?._id) {
     isMyPost = true;
   } else {
     isMyPost = false;
   }
-
-  console.log(isMyPost);
 
   const handleDelete = (id) => {
     setIsOpen(false);
@@ -89,7 +87,7 @@ const Post = ({ postData, isOwnPage }) => {
       <div className="post block">
         <div>
           <div className="postTop">
-            <div className="postTopLeft">
+            <Link to={`/user/${postData.user._id}`} className="postTopLeft">
               <img
                 width="100%"
                 src={postData.user.avatarUrl || userData.avatarUrl}
@@ -108,7 +106,7 @@ const Post = ({ postData, isOwnPage }) => {
                   })}
                 </div>
               </div>
-            </div>
+            </Link>
             {isMyPost && (
               <div className="postTopRight">
                 <svg
@@ -136,12 +134,12 @@ const Post = ({ postData, isOwnPage }) => {
             )}
           </div>
           <div className="postContent">
+            {postData.text ? <p className="postText">{postData.text}</p> : ''}
             {postData.imageUrl ? (
               <img className="postImage" src={postData.imageUrl} alt="" />
             ) : (
               ''
             )}
-            {postData.text ? <p className="postText">{postData.text}</p> : ''}
           </div>
           <div className="postBottom">
             <div className="postBottom__left">
@@ -200,7 +198,7 @@ const Post = ({ postData, isOwnPage }) => {
               <p className="viewsCount">{postData.viewsCount}</p>
             </div>
           </div>
-          <div ref={commentRef} className="comments hidden">
+          <div ref={commentRef} className="comments">
             {postData.comments.map((comm) => (
               <Comment
                 commentData={comm}

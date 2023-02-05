@@ -4,6 +4,7 @@
 
 body {
   background-color: $grey-1;
+  font-weight: 600;
 
   .wrapper {
     button {
@@ -113,7 +114,7 @@ body {
           border-radius: 0;
           padding: 0 20px;
           background-color: $white;
-
+          color: $text-grey;
           .settingsSvg {
             height: 20px;
             width: 20px;
@@ -164,7 +165,7 @@ body {
     .content {
       display: flex;
       padding-top: 20px;
-      justify-content: space-between;
+      // justify-content: space-between;
     }
 
     .navigation {
@@ -173,7 +174,7 @@ body {
       margin-right: 20px;
 
       &__element {
-        padding: 10px;
+        padding: 6px;
         font-size: $font-size-s;
         display: flex;
         align-items: center;
@@ -224,6 +225,22 @@ body {
 
           .status {
             font-size: $font-size-s;
+            margin-bottom: 10px;
+          }
+
+          .location {
+            display: flex;
+            align-items: center;
+            color: $text-grey;
+            font-size: $font-size-s;
+
+            svg {
+              width: 20px;
+              position: relative;
+              left: -2px;
+              // margin-right: 5px;
+              color: $text-grey;
+            }
           }
         }
 
@@ -534,10 +551,12 @@ body {
   // }
 
   .comments {
-    padding-top: 20px;
+    padding-top: 10px;
+    margin-top: 15px;
+    border-top: 1px solid rgb(238, 238, 238);
     .comment {
-      padding: 20px 0px;
-      border-top: 1px solid rgb(226, 226, 226);
+      padding: 10px;
+      margin-bottom: 5px;
       .commentTop {
         display: flex;
         justify-content: space-between;
@@ -565,14 +584,14 @@ body {
     }
     .commentText {
       font-size: $font-size-s;
-      margin-top: 10px;
-      // padding: 0 0px;
+      margin-top: 5px;
+      margin-left: 37px;
     }
 
     .addComment {
       display: flex;
       align-items: center;
-      margin-top: 0px;
+      margin-top: 10px;
 
       img {
         border-radius: 50%;
@@ -602,5 +621,133 @@ body {
 @media (prefers-color-scheme: dark) {
   .header {
     background-color: black;
+  }
+}
+
+.editProfile {
+  flex: 0 0 50%;
+  background-color: $white;
+  border-radius: 20px;
+  padding: 20px;
+
+  &__top {
+    padding: 5px 0;
+  }
+
+  &__content {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    // justify-content: center;
+    align-items: center;
+
+    .profileElement {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      position: relative;
+
+      img {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+        margin-right: 20px;
+
+        // &:hover {
+        filter: brightness(0.6);
+        // }
+      }
+
+      .svgAddPhoto {
+        width: 35px;
+        height: 35px;
+        position: absolute;
+        top: 33px;
+        left: 34px;
+        color: $white;
+      }
+
+      .svgCart {
+        width: 20px;
+        height: 20px;
+        color: rgb(255, 78, 78);
+        position: absolute;
+        left: 100px;
+        top: 76px;
+      }
+
+      p {
+        margin-right: 10px;
+        font-size: $font-size-s;
+        color: $text-grey;
+        min-width: 60px;
+      }
+
+      input {
+        border: 1px solid rgb(206, 206, 206);
+        border-radius: 10px;
+        padding: 10px;
+        width: 300px;
+        font-size: $font-size-s;
+      }
+
+      &__left {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+        p {
+          margin-right: 10px;
+        }
+        input {
+          width: 150px;
+        }
+      }
+      &__right {
+        &-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        p {
+          margin-right: 10px;
+        }
+        input {
+          width: 150px;
+        }
+      }
+    }
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    position: relative;
+
+    svg {
+      width: 32px;
+      height: 32px;
+      position: absolute;
+      right: 120px;
+      color: rgb(49, 219, 49);
+      background-color: #faf1ff;
+      border-radius: 10px;
+
+      background-color: $secondary;
+      color: $primary;
+      border: none;
+      font-size: $font-size-s;
+      padding: 5px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
   }
 }

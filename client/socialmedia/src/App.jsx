@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { getMe } from './redux/slices/userSlice';
 import Navigation from './components/Navigation';
 import NavigationEmpty from './components/skeletons/NavigationEmpty';
+import EditProfile from './pages/EditProfile';
 
 function App() {
   const isAuth = useSelector((state) =>
@@ -34,8 +35,7 @@ function App() {
           <div className="content">
             {<Navigation />}
             <Routes>
-              <Route path="/news" element={<News />} />
-
+              <Route path="user/edit" element={<EditProfile />} />
               <Route
                 path="/"
                 element={
@@ -49,6 +49,7 @@ function App() {
                   isAuth ? <Navigate to={`/user/${user._id}`} /> : <Auth />
                 }
               />
+              <Route path="/news" element={<News />} />
             </Routes>
           </div>
         </div>

@@ -10,10 +10,14 @@ const userSchema = new mongoose.Schema(
       default: 'http://localhost:5000/uploads/avatarPlaceholder.jpeg',
     },
     additionalInfo: {
-      status: String,
+      status: { type: String, default: '' },
+      city: { type: String, default: '' },
+      country: { type: String, default: '' },
+      invitesToMe: { type: [mongoose.Schema.Types.ObjectId], default: [] },
+      invitesFromMe: { type: [mongoose.Schema.Types.ObjectId], default: [] },
     },
     friends: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
       default: [],
     },
   },

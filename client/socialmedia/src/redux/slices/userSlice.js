@@ -46,6 +46,9 @@ const userSlice = createSlice({
     clearProfileData(state) {
       state.currentProfileData = {};
     },
+    setProfileLoading(state, action) {
+      state.isProfileLoading = action.payload;
+    },
   },
 
   extraReducers: (builder) => {
@@ -95,7 +98,12 @@ const userSlice = createSlice({
   },
 });
 
-export const { logout, setOwn, setNotOwn, clearProfileData } =
-  userSlice.actions;
+export const {
+  logout,
+  setOwn,
+  setNotOwn,
+  clearProfileData,
+  setProfileLoading,
+} = userSlice.actions;
 
 export default userSlice.reducer;

@@ -7,10 +7,7 @@ const Navigation = () => {
 
   return (
     <ul className="navigation">
-      <Link
-        to={user.length ? `/user/${user._id}` : '/'}
-        className="navigation__element"
-      >
+      <Link to={'/'} className="navigation__element">
         <svg
           fill="none"
           viewBox="0 0 24 24"

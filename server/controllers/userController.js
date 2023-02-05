@@ -90,7 +90,8 @@ export const getPostsByUser = async (req, res) => {
     const posts = await postModel
       .find({ user: userId })
       .sort([['createdAt', -1]])
-      .populate('user');
+      .populate('user')
+      .populate('comments.user');
     res.json(posts);
   } catch (error) {
     console.log(error);
@@ -109,5 +110,96 @@ export const getMe = async (req, res) => {
     res.json({ ...userData });
   } catch (err) {
     res.status(500).json({ message: 'Нет доступа' });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const oldUser = await userModel.findById(userId);
+    const { avatarUrl, firstName, lastName, status, city, country } = req.body;
+    const fullName = `${firstName} ${lastName}`;
+    const oldAdditionalInfo = oldUser._doc.additionalInfo;
+    const updatedData = {
+      avatarUrl,
+      fullName,
+      additionalInfo: { ...oldAdditionalInfo, status, city, country },
+    };
+
+    const user = await userModel.findByIdAndUpdate(userId, updatedData);
+
+    const { passwordHash, ...userData } = user._doc;
+
+    res.json({ ...userData });
+  } catch (err) {
+    res.status(500).json({ message: 'Не получилось изменить профиль' });
+  }
+};
+
+export const inviteToFriends = async (req, res) => {
+  try {
+    // const myId = req.userId;
+    const myId = '63df93f5fec1270b8c91f2c0';
+    const friendId = req.body.id;
+
+    const myData = await userModel.findById(myId);
+    const friendData = await userModel.findById(friendId);
+
+    const index = friendData._doc.additionalInfo.invitesToMe.findIndex(
+      (userId) => String(userId) === String(myId)
+    );
+
+    if (index === -1) {
+      myData._doc.additionalInfo.invitesFromMe.push(friendId);
+      friendData._doc.additionalInfo.invitesToMe.push(myId);
+    } else {
+      myData._doc.additionalInfo.invitesFromMe =
+        myData._doc.additionalInfo.invitesFromMe.filter(
+          (userId) => String(userId) !== String(friendId)
+        );
+      friendData._doc.additionalInfo.invitesToMe =
+        friendData._doc.additionalInfo.invitesToMe.filter(
+          (userId) => String(userId) !== String(myId)
+        );
+    }
+
+    await userModel.findByIdAndUpdate(myId, myData);
+    await userModel.findByIdAndUpdate(friendId, friendData);
+
+    res.json({ success: 'true' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Не удалось добавить в друзья' });
+  }
+};
+
+export const confirmFriendship = async (req, res) => {
+  try {
+    // const myId = req.userId;
+    const myId = '63dfda6637e6318ce0a77356';
+    const friendId = req.body.id;
+
+    const myData = await userModel.findById(myId);
+    const friendData = await userModel.findById(friendId);
+
+    myData._doc.friends.push(friendId);
+    friendData._doc.friends.push(myId);
+
+    friendData._doc.additionalInfo.invitesFromMe =
+      friendData._doc.additionalInfo.invitesFromMe.filter(
+        (userId) => String(userId) !== String(myId)
+      );
+    myData._doc.additionalInfo.invitesToMe =
+      myData._doc.additionalInfo.invitesToMe.filter(
+        (userId) => String(userId) !== String(friendId)
+      );
+
+    await userModel.findByIdAndUpdate(myId, myData);
+    await userModel.findByIdAndUpdate(friendId, friendData);
+
+    res.json({ success: 'true' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Не удалось добавить в друзья' });
   }
 };

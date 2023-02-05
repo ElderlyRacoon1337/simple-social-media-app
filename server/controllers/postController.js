@@ -15,7 +15,8 @@ export const getAllPosts = async (req, res) => {
       .sort({ _id: -1 })
       .limit(LIMIT)
       .skip(startIndex)
-      .populate('user');
+      .populate('user')
+      .populate('comments.user');
 
     res.json({
       data: posts,
@@ -97,7 +98,6 @@ export const likePost = async (req, res) => {
     const index = post.likes.findIndex(
       (userId) => userId === String(req.userId)
     );
-    console.log(index);
 
     if (index === -1) {
       post.likes.push(req.userId);
@@ -123,17 +123,18 @@ export const commentPost = async (req, res) => {
 
     const post = await postModel.findById(postId);
     const comment = {
-      user: user.fullName,
       text,
       avatarUrl: user.avatarUrl,
       createdAt: new Date(),
-      userId,
+      user: userId,
     };
     post.comments.push(comment);
 
     await postModel.findByIdAndUpdate(postId, post);
 
-    const updatedPost = await postModel.findById(postId);
+    const updatedPost = await postModel
+      .findById(postId)
+      .populate('comments.user');
     const upDatedComment =
       updatedPost.comments[updatedPost.comments.length - 1];
 
@@ -149,7 +150,7 @@ export const deleteComment = async (req, res) => {
     const commentId = req.body.id;
     const postId = req.params.id;
 
-    const post = await postModel.findById(postId);
+    const post = await postModel.findById(postId).populate('comments.user');
     const postCopy = { ...post._doc };
     if (!post.comments.find((el) => el._id == commentId)) {
       return res.status(404).json('Не удалось найти комментарий');

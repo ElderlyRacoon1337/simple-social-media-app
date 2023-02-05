@@ -95,6 +95,12 @@ const postsSlice = createSlice({
       state.postsByUser = state.postsByUser.filter(
         (el) => el._id !== action.payload._id
       );
+
+      if (state.posts.data?.length) {
+        state.posts.data = state.posts.data.filter(
+          (el) => el._id !== action.payload._id
+        );
+      }
     });
 
     builder.addCase(addComment.fulfilled, (state, action) => {
@@ -104,10 +110,18 @@ const postsSlice = createSlice({
       const existsInAll = state.posts?.data?.find(
         (post) => post._id == action.payload.postId
       );
+      // if (existsInUser) {
+      //   existsInUser.comments.push(action.payload);
+      //   existsInAll?.comments?.push(action.payload);
+      // } else if (existsInAll) {
+      //   existsInAll.comments.push(action.payload);
+      // }
+
       if (existsInUser) {
         existsInUser.comments.push(action.payload);
-        existsInAll?.comments?.push(action.payload);
-      } else if (existsInAll) {
+      }
+
+      if (existsInAll) {
         existsInAll.comments.push(action.payload);
       }
     });
@@ -118,15 +132,6 @@ const postsSlice = createSlice({
     });
 
     builder.addCase(deleteComment.fulfilled, (state, action) => {
-      // const existsInUser = state.postsByUser.find(
-      //   (post) => post._id == action.payload.postId
-      // );
-      console.log(action.payload);
-      // if (existsInUser) {
-      //   existsInUser.comments = existsInUser.comments.filter(
-      //     (comm) => comm._id !== action.payload._id
-      //   );
-      // }
       const existsInUser = state.postsByUser.find(
         (post) => post._id == action.payload.postId
       );
@@ -135,23 +140,12 @@ const postsSlice = createSlice({
       );
 
       if (existsInUser) {
-        existsInUser.comments = existsInUser.comments
-          ? action.payload._doc.comments
-          : null;
-        existsInAll.comments = existsInAll.comments
-          ? action.payload._doc.comments
-          : null;
-      } else if (existsInAll) {
-        existsInAll.comments = action.payload._doc.comments;
+        existsInUser.comments = action.payload._doc.comments;
       }
 
-      // if (existsInUser) {
-      //   existsInUser.comments = action.payload._doc.comments;
-      // }
-
-      // if (existsInAll) {
-      //   existsInAll.comments = action.payload._doc.comments;
-      // }
+      if (existsInAll) {
+        existsInAll.comments = action.payload._doc.comments;
+      }
     });
   },
 });

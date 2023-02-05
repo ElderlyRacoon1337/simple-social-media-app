@@ -18,11 +18,12 @@ const CreatePost = ({ user }) => {
 
   const handleSubmit = () => {
     // axios.post('/posts', { text: inputValue, imageUrl });
-    dispatch(createPost({ text: inputValue, imageUrl }));
     setInputValue('');
     // setTimeout(() => {
-    // dispatch(fetchPostsByUser(location.pathname));
-    // }, 1000);
+    //   dispatch(fetchPostsByUser(location.pathname));
+    // }, 100);
+
+    dispatch(createPost({ text: inputValue, imageUrl }));
     dispatch(setPostsLoading(true));
   };
 
