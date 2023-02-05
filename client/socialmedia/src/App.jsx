@@ -34,6 +34,8 @@ function App() {
           <div className="content">
             {<Navigation />}
             <Routes>
+              <Route path="/news" element={<News />} />
+
               <Route
                 path="/"
                 element={
@@ -47,7 +49,6 @@ function App() {
                   isAuth ? <Navigate to={`/user/${user._id}`} /> : <Auth />
                 }
               />
-              <Route path="/news" element={<News />} />
             </Routes>
           </div>
         </div>

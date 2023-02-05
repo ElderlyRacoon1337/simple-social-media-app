@@ -1,7 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteComment, fetchPostsByUser } from '../redux/slices/postsSlice';
+import decode from 'jwt-decode';
 
-const Comment = ({ commentData, isOwnPage }) => {
+const Comment = ({ commentData, isOwnPage, isMyPost, postId }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleDelete = () => {
+    dispatch(deleteComment({ postId, commentId: commentData._id }));
+    setIsOpen(false);
+  };
+
+  let isMy = false;
+
+  const token = localStorage.getItem('token');
+  const decodedToken = token ? decode(token) : '';
+  const userId = decodedToken._id;
+
+  if (userId == commentData.userId) {
+    isMy = true;
+  } else {
+    isMy = false;
+  }
 
   return (
     <div className="comment">
@@ -29,7 +50,7 @@ const Comment = ({ commentData, isOwnPage }) => {
             </div>
           </div>
         </div>
-        {isOwnPage && (
+        {(isMyPost || isMy) && (
           <div className="postTopRight">
             <svg
               onClick={() => setIsOpen(!isOpen)}
@@ -48,8 +69,8 @@ const Comment = ({ commentData, isOwnPage }) => {
             </svg>
             {isOpen && (
               <div className="postPopup">
-                <p>Редактировать</p>
-                <p>Удалить</p>
+                {isMy && <p>Редактировать</p>}
+                <p onClick={handleDelete}>Удалить</p>
               </div>
             )}
           </div>

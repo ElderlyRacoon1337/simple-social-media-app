@@ -17,16 +17,25 @@ import ProfileRightSkeleton from '../components/skeletons/ProfileRightSkeleton';
 import PostSkeleton from '../components/skeletons/PostSkeleton';
 
 const Profile = () => {
-  const [user, setUser] = useState({});
+  // const [user, setUser] = useState({});
   const location = useLocation();
   // const [postsByUser, setPostsByUser] = useState([]);
   const dispatch = useDispatch();
   const postsByUser = useSelector((state) => state.posts.postsByUser);
-  // const [isOwnPage, setIsOwnPage] = useState(false);
   let profileData = useSelector((state) => state.user.currentProfileData);
   const isOwnPage = useSelector((state) => state.user.isOwn);
   const isPostsLoading = useSelector((state) => state.posts.isPostsLoading);
   const isProfileLoading = useSelector((state) => state.user.isProfileLoading);
+
+  const token = localStorage.getItem('token');
+  const decodedToken = decode(token);
+  if (profileData) {
+    if (decodedToken._id == profileData._id) {
+      dispatch(setOwn());
+    } else {
+      dispatch(setNotOwn());
+    }
+  }
 
   useEffect(() => {
     dispatch(fetchProfileData(location.pathname));
@@ -56,29 +65,6 @@ const Profile = () => {
       dispatch(clearProfileData());
     };
   }, []);
-  useEffect(() => {
-    profileData = null;
-    dispatch(clearProfileData());
-    dispatch(fetchProfileData(location.pathname));
-  }, [location.pathname]);
-
-  const ownOrNot = () => {
-    const token = localStorage.getItem('token');
-    const decodedToken = decode(token);
-    if (profileData) {
-      if (decodedToken._id == profileData._id) {
-        dispatch(setOwn());
-        // setIsOwnPage(true);
-      } else {
-        dispatch(setNotOwn());
-        // setIsOwnPage(false);
-      }
-    }
-  };
-
-  setTimeout(() => {
-    ownOrNot();
-  }, 0);
 
   return (
     <>

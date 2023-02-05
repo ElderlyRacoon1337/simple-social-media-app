@@ -4,6 +4,7 @@ const comment = new mongoose.Schema({
   text: { type: String },
   user: { type: String },
   avatarUrl: { type: String },
+  userId: String,
   createdAt: {
     type: Date,
     default: new Date(),

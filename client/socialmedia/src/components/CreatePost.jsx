@@ -2,8 +2,11 @@ import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import axios from '../axios';
-import { fetchPostsByUser, setPostsLoading } from '../redux/slices/postsSlice';
-import CreatePostSkeleton from './skeletons/CreatePostSkeleton';
+import {
+  createPost,
+  fetchPostsByUser,
+  setPostsLoading,
+} from '../redux/slices/postsSlice';
 
 const CreatePost = ({ user }) => {
   const inputFileRef = useRef(null);
@@ -14,11 +17,12 @@ const CreatePost = ({ user }) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleSubmit = () => {
-    axios.post('/posts', { text: inputValue, imageUrl });
+    // axios.post('/posts', { text: inputValue, imageUrl });
+    dispatch(createPost({ text: inputValue, imageUrl }));
     setInputValue('');
-    setTimeout(() => {
-      dispatch(fetchPostsByUser(location.pathname));
-    }, 1000);
+    // setTimeout(() => {
+    // dispatch(fetchPostsByUser(location.pathname));
+    // }, 1000);
     dispatch(setPostsLoading(true));
   };
 

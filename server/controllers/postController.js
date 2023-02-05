@@ -35,7 +35,7 @@ export const createPost = async (req, res) => {
       user: req.userId,
     });
     await newPost.save();
-    res.json({ messgage: 'Пост создан' });
+    res.json({ ...newPost._doc });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Не удалось создать пост' });
@@ -127,12 +127,17 @@ export const commentPost = async (req, res) => {
       text,
       avatarUrl: user.avatarUrl,
       createdAt: new Date(),
+      userId,
     };
     post.comments.push(comment);
 
     await postModel.findByIdAndUpdate(postId, post);
 
-    res.json({ ...comment, postId });
+    const updatedPost = await postModel.findById(postId);
+    const upDatedComment =
+      updatedPost.comments[updatedPost.comments.length - 1];
+
+    res.json({ ...upDatedComment._doc, postId });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Не удалось добавить комментарий' });
@@ -145,6 +150,7 @@ export const deleteComment = async (req, res) => {
     const postId = req.params.id;
 
     const post = await postModel.findById(postId);
+    const postCopy = { ...post._doc };
     if (!post.comments.find((el) => el._id == commentId)) {
       return res.status(404).json('Не удалось найти комментарий');
     }
@@ -155,8 +161,9 @@ export const deleteComment = async (req, res) => {
 
     await postModel.findByIdAndUpdate(postId, post);
 
-    res.json({ success: true });
+    res.json({ ...post, postId });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Не удалось удалить комментарий' });
   }
 };

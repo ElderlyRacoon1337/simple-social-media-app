@@ -29,6 +29,27 @@ export const addComment = createAsyncThunk(
   }
 );
 
+export const deleteComment = createAsyncThunk(
+  'posts/deleteComment',
+  async ({ postId, commentId }) => {
+    const { data } = await axios.patch(`/posts/${postId}/commentPost`, {
+      id: commentId,
+    });
+    return data;
+  }
+);
+
+export const createPost = createAsyncThunk(
+  'posts/createPost',
+  async ({ text, imageUrl }) => {
+    const { data } = await axios.post(`/posts`, {
+      text,
+      imageUrl,
+    });
+    return data;
+  }
+);
+
 const initialState = {
   posts: [],
   postsByUser: [],
@@ -89,6 +110,48 @@ const postsSlice = createSlice({
       } else if (existsInAll) {
         existsInAll.comments.push(action.payload);
       }
+    });
+
+    builder.addCase(createPost.fulfilled, (state, action) => {
+      state.postsByUser.unshift(action.payload);
+      state.isPostsLoading = false;
+    });
+
+    builder.addCase(deleteComment.fulfilled, (state, action) => {
+      // const existsInUser = state.postsByUser.find(
+      //   (post) => post._id == action.payload.postId
+      // );
+      console.log(action.payload);
+      // if (existsInUser) {
+      //   existsInUser.comments = existsInUser.comments.filter(
+      //     (comm) => comm._id !== action.payload._id
+      //   );
+      // }
+      const existsInUser = state.postsByUser.find(
+        (post) => post._id == action.payload.postId
+      );
+      const existsInAll = state.posts?.data?.find(
+        (post) => post._id == action.payload.postId
+      );
+
+      if (existsInUser) {
+        existsInUser.comments = existsInUser.comments
+          ? action.payload._doc.comments
+          : null;
+        existsInAll.comments = existsInAll.comments
+          ? action.payload._doc.comments
+          : null;
+      } else if (existsInAll) {
+        existsInAll.comments = action.payload._doc.comments;
+      }
+
+      // if (existsInUser) {
+      //   existsInUser.comments = action.payload._doc.comments;
+      // }
+
+      // if (existsInAll) {
+      //   existsInAll.comments = action.payload._doc.comments;
+      // }
     });
   },
 });

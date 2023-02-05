@@ -17,8 +17,6 @@ const Post = ({ postData, isOwnPage }) => {
   const likeButton = useRef();
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const isPostsLoading = useSelector((state) => state.posts.isPostsLoading);
   const [commentValue, setCommentValue] = useState('');
   const userData = useSelector((state) => state.user.userData);
 
@@ -26,6 +24,15 @@ const Post = ({ postData, isOwnPage }) => {
   const decodedToken = token ? decode(token) : '';
   const userId = decodedToken._id;
   const commentRef = useRef();
+
+  let isMyPost = false;
+  if (userId == postData.user._id) {
+    isMyPost = true;
+  } else {
+    isMyPost = false;
+  }
+
+  console.log(isMyPost);
 
   const handleDelete = (id) => {
     setIsOpen(false);
@@ -75,15 +82,21 @@ const Post = ({ postData, isOwnPage }) => {
         : 'comments hidden';
   };
 
+  // console.log(postData);
+
   return (
     <>
       <div className="post block">
         <div>
           <div className="postTop">
             <div className="postTopLeft">
-              <img width="100%" src={postData.user.avatarUrl} alt="" />
+              <img
+                width="100%"
+                src={postData.user.avatarUrl || userData.avatarUrl}
+                alt=""
+              />
               <div className="postUser">
-                <p>{postData.user.fullName}</p>
+                <p>{postData.user.fullName || userData.fullName}</p>
                 <div className="createdAt">
                   {new Date(postData.createdAt).toLocaleString('ru', {
                     year: 'numeric',
@@ -96,7 +109,7 @@ const Post = ({ postData, isOwnPage }) => {
                 </div>
               </div>
             </div>
-            {isOwnPage && (
+            {isMyPost && (
               <div className="postTopRight">
                 <svg
                   onClick={() => setIsOpen(!isOpen)}
@@ -189,7 +202,13 @@ const Post = ({ postData, isOwnPage }) => {
           </div>
           <div ref={commentRef} className="comments hidden">
             {postData.comments.map((comm) => (
-              <Comment commentData={comm} isOwnPage={isOwnPage} />
+              <Comment
+                commentData={comm}
+                isOwnPage={isOwnPage}
+                postId={postData._id}
+                postUser={postData.user._id}
+                isMyPost={isMyPost}
+              />
             ))}
             <div className="addComment">
               <img src={userData.avatarUrl} alt="" />

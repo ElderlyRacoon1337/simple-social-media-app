@@ -356,6 +356,7 @@ body {
 
         .postTopRight {
           position: relative;
+
           .postEdit {
             width: 25px;
             color: $text-grey;
@@ -369,6 +370,7 @@ body {
             border-radius: 10px;
             padding: 8px 0;
             box-shadow: 0px 17px 17px 0px rgba(34, 60, 80, 0.2);
+            z-index: 2;
 
             p {
               padding: 10px;
@@ -534,7 +536,7 @@ body {
   .comments {
     padding-top: 20px;
     .comment {
-      padding: 20px 20px;
+      padding: 20px 0px;
       border-top: 1px solid rgb(226, 226, 226);
       .commentTop {
         display: flex;
