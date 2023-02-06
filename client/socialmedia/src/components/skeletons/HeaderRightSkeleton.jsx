@@ -7,8 +7,8 @@ const HeaderRightSkeleton = (props) => (
     width={230}
     height={34}
     viewBox="0 0 230 34"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
+    backgroundColor="var(--loader1)"
+    foregroundColor="var(--loader2)"
     {...props}
   >
     <circle cx="210" cy="17" r="15" />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../redux/slices/userSlice';
@@ -15,9 +15,26 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [theme, setTheme] = useState(localStorage.getItem('theme'));
+
   const user = useSelector((state) => state.user.userData);
 
-  const handleSwitch = () => {};
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, []);
+
+  const handleSwitch = () => {
+    setIsOpen(false);
+    if (theme == 'light') {
+      document.documentElement.dataset.theme = 'dark';
+      localStorage.setItem('theme', 'dark');
+      setTheme('dark');
+    } else {
+      document.documentElement.dataset.theme = 'light';
+      localStorage.setItem('theme', 'light');
+      setTheme('light');
+    }
+  };
 
   return (
     <header className="header">
@@ -25,8 +42,8 @@ const Header = () => {
         <div className="header__content">
           <div className="header__logo">
             <Link to={user.length ? `/user/${user._id}` : '/'}>
-              {/* <span>ВК</span>онтакте */}
-              <svg
+              <span>Treysi</span>
+              {/* <svg
                 width="30"
                 height="30"
                 viewBox="0 0 30 30"
@@ -41,23 +58,27 @@ const Header = () => {
                   d="M15.96 21.61c-6.84 0-10.74-4.68-10.9-12.48H8.5c.11 5.72 2.63 8.14 4.63 8.64V9.13h3.23v4.93c1.97-.21 4.05-2.46 4.75-4.94h3.22a9.53 9.53 0 0 1-4.38 6.23 9.87 9.87 0 0 1 5.13 6.26h-3.55c-.76-2.37-2.66-4.21-5.17-4.46v4.46h-.39Z"
                   fill="#fff"
                 ></path>
-              </svg>
+              </svg> */}
             </Link>
           </div>
           <div className="header__right">
             {!isProfileLoading ? (
               isAuth ? (
                 !isProfileLoading ? (
-                  <div className="header__right__userInfo">
+                  <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="header__right__userInfo"
+                  >
                     <p className="header__fullName">{user.fullName}</p>
                     <img
                       src={user.avatarUrl}
                       alt=""
                       className="header__avatar"
                     />
-                  </div>
+                  </button>
                 ) : (
-                  <HeaderRightSkeleton />
+                  ''
+                  // <HeaderRightSkeleton />
                 )
               ) : (
                 ''
@@ -66,7 +87,7 @@ const Header = () => {
               <HeaderRightSkeleton />
             )}
 
-            <button
+            {/* <button
               onClick={() => setIsOpen(!isOpen)}
               href="/"
               className="settings"
@@ -89,17 +110,12 @@ const Header = () => {
                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-            </button>
+            </button> */}
             {isOpen && (
               <div className="settings__popup">
-                <div
-                  href="/"
-                  onClick={() => {
-                    setIsOpen(false);
-                  }}
-                >
-                  <p onClick={handleSwitch} className="popup-element">
-                    Темный режим
+                <div onClick={handleSwitch}>
+                  <p className="popup-element">
+                    {theme == 'light' ? 'Темная тема' : 'Светлая тема'}
                   </p>
                 </div>
                 {isAuth && (

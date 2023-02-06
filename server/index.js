@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import multer from 'multer';
+import { Server } from 'socket.io';
+import http from 'http';
 
 import postRoutes from './routes/posts.js';
 import userRoutes from './routes/user.js';
@@ -10,6 +12,9 @@ import isAuth from './middleware/auth.js';
 import createFolder from './middleware/createFolder.js';
 
 const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server);
 
 // подключение .env файла
 dotenv.config();
@@ -47,6 +52,18 @@ app.post(
 app.use('/posts', postRoutes);
 app.use('/user', userRoutes);
 
+app.get('/chat', (req, res) => {
+  res.sendFile(
+    '/Users/pavel/Documents/GitHub/simple-social-media-app/server/index.html'
+  );
+});
+
+io.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
+  });
+});
+
 // подключение к базе данных
 mongoose.set('strictQuery', true);
 mongoose
@@ -58,7 +75,7 @@ mongoose
   .catch((err) => console.log('Database error', err));
 
 // запуск сервера
-app.listen(process.env.PORT, (err) => {
+server.listen(process.env.PORT, (err) => {
   if (err) {
     return console.log(err);
   }

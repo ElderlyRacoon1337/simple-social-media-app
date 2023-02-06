@@ -32,3 +32,49 @@ $text-grey: #626d7a;
 $grey-1: rgb(246, 246, 246);
 
 $grey-2: rgb(239, 239, 239);
+
+:root[data-theme='light'] {
+  --primary: #3461f5;
+  // --primary: hsl(283, 90%, 45%);
+  --secondary: #f4efff;
+  --white: #fff;
+  --whiteD: #fff;
+  --black: #000000;
+  --grey-1: rgb(246, 246, 246);
+  --grey-2: rgb(239, 239, 239);
+  --text-grey: #626d7a;
+  --darkenButt: rgb(237, 232, 255);
+  --lightenButt: #7b8b9e;
+  --box-shadow: rgba(34, 60, 80, 0.2);
+  --border: rgb(238, 238, 238);
+  --red: rgb(255, 78, 78);
+  --lightRed: rgb(255, 201, 201);
+  --loader1: #f3f3f3;
+  --loader2: #ecebeb;
+  --text: #000;
+  --logos: var(--primary);
+}
+
+:root[data-theme='dark'] {
+  --primary: hsl(226, 100%, 71%);
+  --primary: hsl(153, 100%, 78%);
+  --primary: hsl(283, 100%, 82%);
+  --primary: #fff;
+  --secondary: #181818;
+  --white: #fff;
+  --whiteD: #212121;
+  --black: #000000;
+  --grey-1: rgb(19, 19, 19);
+  --grey-2: rgb(45, 45, 45);
+  --text: white;
+  --text-grey: #abbbcf;
+  --darkenButt: rgb(17, 17, 17);
+  --lightenButt: #7b8b9e;
+  --border: rgb(80, 80, 80);
+  --box-shadow: rgba(0, 0, 0, 0.2);
+  --red: rgb(255, 111, 111);
+  --lightRed: rgb(70, 34, 34);
+  --loader1: #4e4e4e;
+  --loader2: #272727;
+  --logos: #ff895f;
+}

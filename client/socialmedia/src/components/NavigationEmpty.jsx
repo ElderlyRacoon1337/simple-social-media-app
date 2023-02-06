@@ -1,22 +1,22 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import '../../sass/app.scss';
+import '../sass/app.scss';
 
-const Navigation = () => {
+const NavigationEmpty = () => {
   const user = useSelector((state) => state.user.userData);
 
   return (
-    <ul className="navigation" hidden>
+    <ul className="navigationEmpty">
       <Link
         to={user.length ? `/user/${user._id}` : '/'}
-        className="navigation__element"
+        className="navigationEmpty__element"
       >
         <svg
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-6 h-6"
+          className="w-6 h-6 ll"
         >
           <path
             strokeLinecap="round"
@@ -26,7 +26,7 @@ const Navigation = () => {
         </svg>
         <p>Моя страница</p>
       </Link>
-      <Link to="/news" className="navigation__element">
+      <Link to="/news" className="navigationEmpty__element">
         <svg
           fill="none"
           viewBox="0 0 24 24"
@@ -42,7 +42,7 @@ const Navigation = () => {
         </svg>
         <p>Новости</p>
       </Link>
-      <a className="navigation__element">
+      <a className="navigationEmpty__element">
         <svg
           fill="none"
           viewBox="0 0 24 24"
@@ -58,7 +58,7 @@ const Navigation = () => {
         </svg>
         <p>Сообщения</p>
       </a>
-      <a className="navigation__element">
+      <a className="navigationEmpty__element">
         <svg
           fill="none"
           viewBox="0 0 24 24"
@@ -74,7 +74,7 @@ const Navigation = () => {
         </svg>
         <p>Друзья</p>
       </a>
-      <a className="navigation__element">
+      <a className="navigationEmpty__element">
         <svg
           fill="none"
           viewBox="0 0 24 24"
@@ -94,4 +94,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+export default NavigationEmpty;

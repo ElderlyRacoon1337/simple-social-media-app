@@ -12,7 +12,7 @@ import {
 import decode from 'jwt-decode';
 import Comment from './Comment';
 
-const Post = ({ postData, isOwnPage }) => {
+const Post = ({ postData }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const likeButton = useRef();
@@ -24,6 +24,7 @@ const Post = ({ postData, isOwnPage }) => {
   const [isPostEditing, setIsPostEditing] = useState(false);
   const [commentId, setCommentId] = useState('');
   const location = useLocation();
+  const isOwnPage = useSelector((state) => state.user.isOwn);
 
   const token = localStorage.getItem('token');
   const decodedToken = token ? decode(token) : '';

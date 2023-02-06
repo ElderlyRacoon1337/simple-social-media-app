@@ -11,6 +11,7 @@ import { getMe } from './redux/slices/userSlice';
 import Navigation from './components/Navigation';
 import EditProfile from './pages/EditProfile';
 import Friends from './pages/Friends';
+import NavigationEmpty from './components/NavigationEmpty';
 
 function App() {
   const isAuth = useSelector((state) =>
@@ -33,7 +34,7 @@ function App() {
         <Header />
         <div className="container">
           <div className="content">
-            {<Navigation />}
+            {isAuth ? <Navigation /> : <NavigationEmpty />}
             <Routes>
               <Route path="user/edit" element={<EditProfile />} />
               <Route

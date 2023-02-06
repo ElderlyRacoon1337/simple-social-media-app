@@ -49,8 +49,6 @@ const Profile = () => {
         )
       ) {
         isInvited = true;
-
-        // console.log('ura');
       }
     }
   }
@@ -76,8 +74,6 @@ const Profile = () => {
       }
     }
   }
-
-  console.log(profileData.friends);
 
   useEffect(() => {
     dispatch(fetchProfileData(location.pathname));
@@ -160,9 +156,28 @@ const Profile = () => {
                 Принять заявку
               </button>
             ) : isMyFriend ? (
-              <button onClick={handleDeleteFriend} className="button">
-                Удалить из друзей
-              </button>
+              <div className="inFriends">
+                <p className="button">
+                  У вас в друзьях
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.5 12.75l6 6 9-13.5"
+                    />
+                  </svg>
+                </p>
+                <button onClick={handleDeleteFriend} className="button">
+                  Удалить из друзей
+                </button>
+              </div>
             ) : (
               <button onClick={handleInviteFriend} className="button">
                 Добавить в друзья

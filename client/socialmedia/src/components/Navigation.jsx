@@ -6,8 +6,8 @@ const Navigation = () => {
   const user = useSelector((state) => state.user.userData);
 
   return (
-    <ul className="navigation">
-      <Link to="/" className="navigation__element">
+    <ul className="navigation navigationEmpty">
+      <Link to={`/user/${user._id}`} className="navigation__element">
         <svg
           fill="none"
           viewBox="0 0 24 24"

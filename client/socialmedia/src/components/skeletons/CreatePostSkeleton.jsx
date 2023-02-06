@@ -7,8 +7,8 @@ const CreatePostSkeleton = (props) => (
     width={510}
     height={34}
     viewBox="0 0 510 34"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
+    backgroundColor="var(--loader1)"
+    foregroundColor="var(--loader2)"
     {...props}
   >
     <circle cx="26" cy="17" r="15" />

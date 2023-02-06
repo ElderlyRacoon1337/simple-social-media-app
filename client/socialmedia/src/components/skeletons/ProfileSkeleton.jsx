@@ -7,8 +7,8 @@ const ProfileSkeleton = (props) => (
     width={400}
     height={150}
     viewBox="0 0 400 150"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
+    backgroundColor="var(--loader1)"
+    foregroundColor="var(--loader2)"
     {...props}
   >
     <circle cx="75" cy="75" r="75" />
