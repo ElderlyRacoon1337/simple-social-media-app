@@ -9,8 +9,8 @@ import Auth from './pages/Auth';
 import { useEffect } from 'react';
 import { getMe } from './redux/slices/userSlice';
 import Navigation from './components/Navigation';
-import NavigationEmpty from './components/skeletons/NavigationEmpty';
 import EditProfile from './pages/EditProfile';
+import Friends from './pages/Friends';
 
 function App() {
   const isAuth = useSelector((state) =>
@@ -50,6 +50,7 @@ function App() {
                 }
               />
               <Route path="/news" element={<News />} />
+              <Route path="/friends" element={<Friends />} />
             </Routes>
           </div>
         </div>

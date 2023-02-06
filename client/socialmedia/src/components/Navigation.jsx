@@ -7,7 +7,7 @@ const Navigation = () => {
 
   return (
     <ul className="navigation">
-      <Link to={'/'} className="navigation__element">
+      <Link to="/" className="navigation__element">
         <svg
           fill="none"
           viewBox="0 0 24 24"
@@ -55,7 +55,7 @@ const Navigation = () => {
         </svg>
         <p>Сообщения</p>
       </a>
-      <a className="navigation__element">
+      <Link to="/friends" className="navigation__element">
         <svg
           fill="none"
           viewBox="0 0 24 24"
@@ -70,7 +70,7 @@ const Navigation = () => {
           />
         </svg>
         <p>Друзья</p>
-      </a>
+      </Link>
       <a className="navigation__element">
         <svg
           fill="none"

@@ -1,14 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import axios from '../axios';
-import { fetchPostsByUser } from '../redux/slices/postsSlice';
-import { getMe } from '../redux/slices/userSlice';
 
 const EditProfile = () => {
   const userData = useSelector((state) => state.user.userData);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();

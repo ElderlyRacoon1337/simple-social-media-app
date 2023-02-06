@@ -217,9 +217,9 @@ const Profile = () => {
         </div>
         <div className="profile__content__right">
           <div className="block">
-            <p>
+            <Link to="/friends">
               Друзья<span>{profileData?.friends?.length}</span>
-            </p>
+            </Link>
             <div className="friendsRaw">
               {profileData?.friends?.map((friend) => (
                 <Link to={`/user/${friend._id}`} className="friend">
