@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import {
   addComment,
+  changeComment,
   deletePost,
   fetchPosts,
   fetchPostsByUser,
@@ -19,11 +20,17 @@ const Post = ({ postData, isOwnPage }) => {
   const [likes, setLikes] = useState([]);
   const [commentValue, setCommentValue] = useState('');
   const userData = useSelector((state) => state.user.userData);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isPostEditing, setIsPostEditing] = useState(false);
+  const [commentId, setCommentId] = useState('');
+  const location = useLocation();
 
   const token = localStorage.getItem('token');
   const decodedToken = token ? decode(token) : '';
   const userId = decodedToken._id;
   const commentRef = useRef();
+
+  const inputRef = useRef();
 
   let isMyPost = false;
   if (userId == postData?.user?._id) {
@@ -39,6 +46,9 @@ const Post = ({ postData, isOwnPage }) => {
 
   const handleEdit = () => {
     setIsOpen(false);
+    setIsPostEditing(true);
+    setCommentValue(postData.text);
+    inputRef.current.focus();
   };
 
   const onLike = () => {
@@ -68,9 +78,32 @@ const Post = ({ postData, isOwnPage }) => {
   }, [isLiked]);
 
   const handleAddComment = () => {
-    // axios.post(`/posts/${postData._id}/commentPost`, { text: commentValue });
-    setCommentValue('');
-    dispatch(addComment({ id: postData._id, value: commentValue }));
+    if (!isEditing && !isPostEditing) {
+      setCommentValue('');
+      dispatch(addComment({ id: postData._id, value: commentValue }));
+    } else if (isEditing) {
+      setCommentValue('');
+
+      axios.patch(`/posts/${postData._id}/updateComment`, {
+        postId: postData._id,
+        commentId: commentId,
+        text: commentValue,
+      });
+      setIsEditing(false);
+
+      setTimeout(() => {
+        dispatch(fetchPostsByUser(location.pathname));
+        dispatch(fetchPosts(location.pathname));
+      }, 500);
+    } else {
+      axios.patch(`/posts/${postData._id}`, { text: commentValue });
+      setCommentValue('');
+      setIsPostEditing(false);
+      setTimeout(() => {
+        dispatch(fetchPostsByUser(location.pathname));
+        dispatch(fetchPosts(location.pathname));
+      }, 500);
+    }
   };
 
   const onClickComment = () => {
@@ -79,8 +112,6 @@ const Post = ({ postData, isOwnPage }) => {
         ? 'comments'
         : 'comments hidden';
   };
-
-  // console.log(postData);
 
   return (
     <>
@@ -126,7 +157,7 @@ const Post = ({ postData, isOwnPage }) => {
                 </svg>
                 {isOpen && (
                   <div className="postPopup">
-                    <p onClick={handleEdit}>Редактировать</p>
+                    <p onClick={() => handleEdit()}>Редактировать</p>
                     <p onClick={() => handleDelete(postData._id)}>Удалить</p>
                   </div>
                 )}
@@ -201,6 +232,9 @@ const Post = ({ postData, isOwnPage }) => {
           <div ref={commentRef} className="comments">
             {postData.comments.map((comm) => (
               <Comment
+                setCommentId={(commentId) => setCommentId(commentId)}
+                setIsEditing={(e) => setIsEditing(e)}
+                inputRef={inputRef}
                 commentData={comm}
                 isOwnPage={isOwnPage}
                 postId={postData._id}
@@ -211,6 +245,7 @@ const Post = ({ postData, isOwnPage }) => {
             <div className="addComment">
               <img src={userData.avatarUrl} alt="" />
               <input
+                ref={inputRef}
                 type="text"
                 value={commentValue}
                 onChange={(e) => setCommentValue(e.target.value)}

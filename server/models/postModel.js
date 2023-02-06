@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 const comment = new mongoose.Schema({
   text: { type: String },
-  avatarUrl: { type: String },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdAt: {
     type: Date,

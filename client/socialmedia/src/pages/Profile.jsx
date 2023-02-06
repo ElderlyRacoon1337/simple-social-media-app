@@ -19,16 +19,17 @@ import ProfileRightSkeleton from '../components/skeletons/ProfileRightSkeleton';
 import PostSkeleton from '../components/skeletons/PostSkeleton';
 
 const Profile = () => {
-  // const [user, setUser] = useState({});
   const location = useLocation();
-  // const [postsByUser, setPostsByUser] = useState([]);
   const dispatch = useDispatch();
   const postsByUser = useSelector((state) => state.posts.postsByUser);
-  let profileData = useSelector((state) => state.user.currentProfileData);
+  const profileData = useSelector((state) => state.user.currentProfileData);
+  const myData = useSelector((state) => state.user.userData);
   const isOwnPage = useSelector((state) => state.user.isOwn);
   const isPostsLoading = useSelector((state) => state.posts.isPostsLoading);
   const isProfileLoading = useSelector((state) => state.user.isProfileLoading);
-  // const isProfileLoading = true;
+  let isInvited = false;
+  let isInvitedMe = false;
+  let isMyFriend = false;
 
   const token = localStorage.getItem('token');
   const decodedToken = decode(token);
@@ -40,41 +41,69 @@ const Profile = () => {
     }
   }
 
-  useEffect(() => {
-    // dispatch(setProfileLoading(true));
+  if (myData._id) {
+    if (profileData._id) {
+      if (
+        profileData.additionalInfo.invitesToMe.find(
+          (el) => String(el) == String(myData._id)
+        )
+      ) {
+        isInvited = true;
 
+        // console.log('ura');
+      }
+    }
+  }
+
+  if (myData._id) {
+    if (profileData._id) {
+      if (
+        profileData.additionalInfo.invitesFromMe.find(
+          (el) => String(el) == String(myData._id)
+        )
+      ) {
+        isInvitedMe = true;
+      }
+    }
+  }
+
+  if (myData._id) {
+    if (profileData._id) {
+      if (
+        profileData.friends.find((el) => String(el._id) == String(myData._id))
+      ) {
+        isMyFriend = true;
+      }
+    }
+  }
+
+  console.log(profileData.friends);
+
+  useEffect(() => {
     dispatch(fetchProfileData(location.pathname));
 
     window.scrollTo(0, 0);
 
     dispatch(getMe());
 
-    // location.pathname == '/'
-    //   ? axios.get(`/user`).then((res) => setUser(res.data))
-    //   : axios
-    //       .get(`${location.pathname}`)
-    //       .then((res) => setUser(res.data))
-    // .then(
-    //   axios
-    //     .get(`/user/${user._id}/posts`)
-    //     .then((res) => setPostsByUser(res.data))
-    // );
-
-    // axios.get(`${location.pathname}`).then((res) => {
-    //   setUser(res.data);
-    // });
-
     dispatch(fetchPostsByUser(location.pathname));
 
-    // axios.get(`/user/${user._id}/posts`).then((res) => {
-    //   setPostsByUser(res.data);
-    //   console.log(user);
-    // });
     return () => {
-      profileData = null;
       dispatch(clearProfileData());
     };
   }, [location.pathname]);
+
+  const handleInviteFriend = () => {
+    axios.post('user/inviteToFriends', { id: profileData._id });
+  };
+
+  const handleAddFriend = () => {
+    axios.post('user/confirmFriendship', { id: profileData._id });
+  };
+
+  const handleDeleteFriend = () => {
+    axios.post('user/deleteFriend', { id: profileData._id });
+  };
 
   return (
     <div className="profile">
@@ -90,7 +119,6 @@ const Profile = () => {
               {profileData?.additionalInfo?.city && (
                 <p className="location">
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
@@ -123,8 +151,22 @@ const Profile = () => {
               <Link to={'/user/edit'} className="button">
                 Изменить профиль
               </Link>
+            ) : isInvited ? (
+              <button onClick={handleInviteFriend} className="button">
+                Отменить заявку
+              </button>
+            ) : isInvitedMe ? (
+              <button onClick={handleAddFriend} className="button">
+                Принять заявку
+              </button>
+            ) : isMyFriend ? (
+              <button onClick={handleDeleteFriend} className="button">
+                Удалить из друзей
+              </button>
             ) : (
-              ''
+              <button onClick={handleInviteFriend} className="button">
+                Добавить в друзья
+              </button>
             )
           ) : (
             <ProfileRightSkeleton />
@@ -142,9 +184,7 @@ const Profile = () => {
           ) : (
             ''
           )}
-          <h1 className="allPosts__title">
-            {/* {isOwnPage ? 'Мои посты' : 'Посты пользователя'} */}
-          </h1>
+
           <div className="allPosts">
             {!isPostsLoading ? (
               Array.isArray(postsByUser) ? (
@@ -175,8 +215,22 @@ const Profile = () => {
             )}
           </div>
         </div>
+        <div className="profile__content__right">
+          <div className="block">
+            <p>
+              Друзья<span>{profileData?.friends?.length}</span>
+            </p>
+            <div className="friendsRaw">
+              {profileData?.friends?.map((friend) => (
+                <Link to={`/user/${friend._id}`} className="friend">
+                  <img src={friend.avatarUrl} alt="" />
+                  <p className="friendsName">{friend.fullName.split(' ')[0]}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="profileContent__right"></div>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import {
   getAllPosts,
   getPost,
   likePost,
+  updateComment,
   updatePost,
 } from '../controllers/postController.js';
 import isAuth from '../middleware/auth.js';
@@ -23,5 +24,6 @@ router.delete('/:id', isAuth, deletePost);
 router.patch('/:id/likePost', isAuth, likePost);
 router.post('/:id/commentPost', isAuth, commentPost);
 router.patch('/:id/commentPost', isAuth, deleteComment);
+router.patch('/:id/updateComment', updateComment);
 
 export default router;

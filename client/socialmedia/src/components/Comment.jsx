@@ -1,10 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteComment, fetchPostsByUser } from '../redux/slices/postsSlice';
+import { deleteComment } from '../redux/slices/postsSlice';
 import decode from 'jwt-decode';
 import { Link } from 'react-router-dom';
 
-const Comment = ({ commentData, isOwnPage, isMyPost, postId }) => {
+const Comment = ({
+  commentData,
+  isMyPost,
+  postId,
+  inputRef,
+  setIsEditing,
+  setCommentId,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
 
@@ -25,7 +32,14 @@ const Comment = ({ commentData, isOwnPage, isMyPost, postId }) => {
     isMy = false;
   }
 
-  console.log(commentData);
+  const handleEdit = () => {
+    setIsOpen(false);
+    console.log(commentData.text);
+    inputRef.current.value = commentData.text;
+    setIsEditing(true);
+    setCommentId(commentData._id);
+    inputRef.current.focus();
+  };
 
   return (
     <div className="comment">
@@ -34,7 +48,7 @@ const Comment = ({ commentData, isOwnPage, isMyPost, postId }) => {
           <img
             className="commentAvatar"
             width="100%"
-            src={commentData.avatarUrl}
+            src={commentData.user.avatarUrl}
             alt=""
           />
           <div className="commentUser">
@@ -72,7 +86,7 @@ const Comment = ({ commentData, isOwnPage, isMyPost, postId }) => {
             </svg>
             {isOpen && (
               <div className="postPopup">
-                {isMy && <p>Редактировать</p>}
+                {isMy && <p onClick={handleEdit}>Редактировать</p>}
                 <p onClick={handleDelete}>Удалить</p>
               </div>
             )}

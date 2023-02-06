@@ -63,6 +63,9 @@ const postsSlice = createSlice({
     setPostsLoading(state, action) {
       state.isPostsLoading = action.payload;
     },
+    changeComment(state, action) {
+      state.postsByUser = [];
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPosts.pending, (state) => {
@@ -110,12 +113,6 @@ const postsSlice = createSlice({
       const existsInAll = state.posts?.data?.find(
         (post) => post._id == action.payload.postId
       );
-      // if (existsInUser) {
-      //   existsInUser.comments.push(action.payload);
-      //   existsInAll?.comments?.push(action.payload);
-      // } else if (existsInAll) {
-      //   existsInAll.comments.push(action.payload);
-      // }
 
       if (existsInUser) {
         existsInUser.comments.push(action.payload);
@@ -150,6 +147,6 @@ const postsSlice = createSlice({
   },
 });
 
-export const { setPostsLoading } = postsSlice.actions;
+export const { setPostsLoading, changeComment } = postsSlice.actions;
 
 export default postsSlice.reducer;

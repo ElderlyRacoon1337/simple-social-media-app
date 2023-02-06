@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
     friends: {
       type: [mongoose.Schema.Types.ObjectId],
       default: [],
+      ref: 'User',
     },
   },
   {

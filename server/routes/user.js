@@ -8,6 +8,7 @@ import {
   updateProfile,
   inviteToFriends,
   confirmFriendship,
+  deleteFriend,
 } from '../controllers/userController.js';
 import isAuth from '../middleware/auth.js';
 
@@ -21,5 +22,6 @@ router.get('/:id/posts', getPostsByUser);
 router.patch('/:id', isAuth, updateProfile);
 router.post('/inviteToFriends', isAuth, inviteToFriends);
 router.post('/confirmFriendship', isAuth, confirmFriendship);
+router.post('/deleteFriend', isAuth, deleteFriend);
 
 export default router;

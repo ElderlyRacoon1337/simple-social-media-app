@@ -73,7 +73,7 @@ export const signIn = async (req, res) => {
 export const getUser = async (req, res) => {
   try {
     const id = req.params.id;
-    const user = await userModel.findById(id);
+    const user = await userModel.findById(id).populate('friends');
     if (!user) {
       return res.status(404).json({ message: 'Пользователь не найден' });
     }
@@ -101,7 +101,7 @@ export const getPostsByUser = async (req, res) => {
 
 export const getMe = async (req, res) => {
   try {
-    const user = await userModel.findById(req.userId);
+    const user = await userModel.findById(req.userId).populate('friends');
     if (!user) {
       return res.status(404).json({ message: 'Пользователь не найден' });
     }
@@ -138,8 +138,7 @@ export const updateProfile = async (req, res) => {
 
 export const inviteToFriends = async (req, res) => {
   try {
-    // const myId = req.userId;
-    const myId = '63df93f5fec1270b8c91f2c0';
+    const myId = req.userId;
     const friendId = req.body.id;
 
     const myData = await userModel.findById(myId);
@@ -175,8 +174,7 @@ export const inviteToFriends = async (req, res) => {
 
 export const confirmFriendship = async (req, res) => {
   try {
-    // const myId = req.userId;
-    const myId = '63dfda6637e6318ce0a77356';
+    const myId = req.userId;
     const friendId = req.body.id;
 
     const myData = await userModel.findById(myId);
@@ -193,6 +191,35 @@ export const confirmFriendship = async (req, res) => {
       myData._doc.additionalInfo.invitesToMe.filter(
         (userId) => String(userId) !== String(friendId)
       );
+
+    await userModel.findByIdAndUpdate(myId, myData);
+    await userModel.findByIdAndUpdate(friendId, friendData);
+
+    res.json({ success: 'true' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Не удалось добавить в друзья' });
+  }
+};
+
+export const deleteFriend = async (req, res) => {
+  try {
+    const myId = req.userId;
+    const friendId = req.body.id;
+
+    const myData = await userModel.findById(myId);
+    const friendData = await userModel.findById(friendId);
+
+    friendData._doc.friends = friendData._doc.friends.filter(
+      (userId) => String(userId) !== String(myId)
+    );
+
+    friendData._doc.additionalInfo.invitesFromMe.push(myId);
+    myData._doc.additionalInfo.invitesToMe.push(friendId);
+
+    myData._doc.friends = myData._doc.friends.filter(
+      (userId) => String(userId) !== String(friendId)
+    );
 
     await userModel.findByIdAndUpdate(myId, myData);
     await userModel.findByIdAndUpdate(friendId, friendData);

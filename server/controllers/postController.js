@@ -67,7 +67,7 @@ export const updatePost = async (req, res) => {
       return res.status(404).send(`No post with id: ${id}`);
 
     const updatedPost = {
-      _id: req.body.id,
+      // _id: req.body.id,
       title,
       text,
       imageUrl,
@@ -166,5 +166,40 @@ export const deleteComment = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Не удалось удалить комментарий' });
+  }
+};
+
+export const updateComment = async (req, res) => {
+  try {
+    const { postId, commentId, text } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(postId))
+      return res.status(404).send(`No post with id: ${id}`);
+
+    const post = await postModel.findById(postId);
+    const comments = post._doc.comments;
+    const oldComment = post._doc.comments.find((el) => el._id == commentId);
+
+    const updatedComment = { ...oldComment._doc, text };
+
+    const anotherComments = comments?.filter(
+      (comm) => String(comm._id) !== commentId
+    );
+
+    let updatedComments = [updatedComment, ...(anotherComments || [])];
+
+    updatedComments = updatedComments.sort(function (a, b) {
+      return new Date(a.createdAt) - new Date(b.createdAt);
+    });
+
+    const updatedPost = post._doc;
+    updatedPost.comments = updatedComments;
+
+    await postModel.findByIdAndUpdate(postId, updatedPost);
+
+    res.json({ comment: 'ura' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Не удалось обновить комментарий' });
   }
 };
