@@ -39,7 +39,7 @@ const Navigation = () => {
         </svg>
         <p>Новости</p>
       </Link>
-      <a className="navigation__element">
+      <Link to="/messenger" className="navigation__element">
         <svg
           fill="none"
           viewBox="0 0 24 24"
@@ -54,7 +54,7 @@ const Navigation = () => {
           />
         </svg>
         <p>Сообщения</p>
-      </a>
+      </Link>
       <Link to="/friends" className="navigation__element">
         <svg
           fill="none"

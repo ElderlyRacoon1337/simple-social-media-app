@@ -27,7 +27,7 @@ const initialState = {
   userData: {},
   currentProfileData: {},
   isOwn: false,
-  isProfileLoading: true,
+  isProfileLoading: false,
 };
 
 const userSlice = createSlice({

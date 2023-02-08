@@ -17,13 +17,12 @@ const CreatePost = ({ user }) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleSubmit = () => {
-    // axios.post('/posts', { text: inputValue, imageUrl });
+    axios
+      .post('/posts', { text: inputValue, imageUrl })
+      .then((res) => dispatch(fetchPostsByUser(location.pathname)));
     setInputValue('');
-    // setTimeout(() => {
-    //   dispatch(fetchPostsByUser(location.pathname));
-    // }, 100);
 
-    dispatch(createPost({ text: inputValue, imageUrl }));
+    // dispatch(createPost({ text: inputValue, imageUrl }));
     dispatch(setPostsLoading(true));
   };
 

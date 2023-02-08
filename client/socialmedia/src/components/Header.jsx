@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../redux/slices/userSlice';
+import { getMe, logout } from '../redux/slices/userSlice';
 import HeaderRightSkeleton from './skeletons/HeaderRightSkeleton';
 
 const Header = () => {

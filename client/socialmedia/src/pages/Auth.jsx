@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { redirect, useNavigate } from 'react-router-dom';
 import { getMe, signIn, signUp } from '../redux/slices/userSlice';
@@ -21,7 +21,6 @@ const Auth = () => {
   const [signInData, setSignInData] = useState(signInDefault);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const onChangeSignUpInput = (e) => {
     setSignUpData({ ...signUpData, [e.target.name]: e.target.value });

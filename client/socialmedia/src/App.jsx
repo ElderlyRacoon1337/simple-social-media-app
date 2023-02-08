@@ -8,10 +8,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import Auth from './pages/Auth';
 import { useEffect } from 'react';
 import { getMe } from './redux/slices/userSlice';
-import Navigation from './components/Navigation';
 import EditProfile from './pages/EditProfile';
 import Friends from './pages/Friends';
-import NavigationEmpty from './components/NavigationEmpty';
+import Messenger from './pages/Messenger';
+import Conversation from './pages/Conversation';
 
 function App() {
   const isAuth = useSelector((state) =>
@@ -34,13 +34,14 @@ function App() {
         <Header />
         <div className="container">
           <div className="content">
-            {isAuth ? <Navigation /> : <NavigationEmpty />}
             <Routes>
-              <Route path="user/edit" element={<EditProfile />} />
+              <Route path="/messenger" element={<Messenger />} />
+              <Route path="/user/edit" element={<EditProfile />} />
+              <Route path="/conversation/:id" element={<Conversation />} />
               <Route
                 path="/"
                 element={
-                  isAuth ? <Navigate to={`/user/${user._id}`} /> : <Auth />
+                  !isAuth ? <Auth /> : <Navigate to={`/user/${user._id}`} />
                 }
               />
               <Route path="/user/:id" element={<Profile />} />

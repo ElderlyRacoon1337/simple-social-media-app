@@ -8,6 +8,7 @@ import {
   deletePost,
   fetchPosts,
   fetchPostsByUser,
+  setPostsLoading,
 } from '../redux/slices/postsSlice';
 import decode from 'jwt-decode';
 import Comment from './Comment';
@@ -84,26 +85,28 @@ const Post = ({ postData }) => {
       dispatch(addComment({ id: postData._id, value: commentValue }));
     } else if (isEditing) {
       setCommentValue('');
-
-      axios.patch(`/posts/${postData._id}/updateComment`, {
-        postId: postData._id,
-        commentId: commentId,
-        text: commentValue,
-      });
+      dispatch(setPostsLoading(true));
+      axios
+        .patch(`/posts/${postData._id}/updateComment`, {
+          postId: postData._id,
+          commentId: commentId,
+          text: commentValue,
+        })
+        .then((res) => {
+          dispatch(fetchPostsByUser(location.pathname));
+          dispatch(fetchPosts(location.pathname));
+        });
       setIsEditing(false);
-
-      setTimeout(() => {
-        dispatch(fetchPostsByUser(location.pathname));
-        dispatch(fetchPosts(location.pathname));
-      }, 500);
     } else {
-      axios.patch(`/posts/${postData._id}`, { text: commentValue });
+      dispatch(setPostsLoading(true));
+      axios
+        .patch(`/posts/${postData._id}`, { text: commentValue })
+        .then((res) => {
+          dispatch(fetchPostsByUser(location.pathname));
+          dispatch(fetchPosts(location.pathname));
+        });
       setCommentValue('');
       setIsPostEditing(false);
-      setTimeout(() => {
-        dispatch(fetchPostsByUser(location.pathname));
-        dispatch(fetchPosts(location.pathname));
-      }, 500);
     }
   };
 
@@ -233,8 +236,8 @@ const Post = ({ postData }) => {
           <div ref={commentRef} className="comments">
             {postData.comments.map((comm) => (
               <Comment
-                setCommentId={(commentId) => setCommentId(commentId)}
-                setIsEditing={(e) => setIsEditing(e)}
+                setCommentId={setCommentId}
+                setIsEditing={setIsEditing}
                 inputRef={inputRef}
                 commentData={comm}
                 isOwnPage={isOwnPage}

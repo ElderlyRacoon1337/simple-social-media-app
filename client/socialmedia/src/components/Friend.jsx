@@ -16,7 +16,7 @@ const Friend = ({ friend }) => {
         <img src={friend.avatarUrl} alt="" />
         <div className="friendList__item__center">
           <p className="fullName">{friend.fullName}</p>
-          <p className="status">{friend.additionalInfo.status}</p>
+          <p className="status">{friend.additionalInfo?.status}</p>
         </div>
       </Link>
       <div className="friendList__item__right">
