@@ -1,24 +1,42 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from '../axios';
 
 const Friend = ({ friend }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const myData = useSelector((state) => state.user.userData);
 
   const handleDeleteFriend = () => {
     axios.post('user/deleteFriend', { id: friend._id });
     setIsOpen(false);
   };
 
+  const createConversation = async () => {
+    const conversation = await axios.post('conversations', {
+      senderId: myData._id,
+      recieverId: friend._id,
+    });
+    navigate(`/conversation/${conversation.data._id}`);
+  };
+
   return (
     <div className="friendList__item">
-      <Link to={`/user/${friend._id}`} className="friendList__item__left">
-        <img src={friend.avatarUrl} alt="" />
+      <div className="friendList__item__left">
+        <Link to={`/user/${friend._id}`} className="img">
+          <img src={friend.avatarUrl} alt="" />
+        </Link>
         <div className="friendList__item__center">
-          <p className="fullName">{friend.fullName}</p>
+          <Link to={`/user/${friend._id}`} className="fullName">
+            {friend.fullName}
+          </Link>
           <p className="status">{friend.additionalInfo?.status}</p>
+          <p onClick={createConversation} className="sendMessage">
+            Отправить сообщение
+          </p>
         </div>
-      </Link>
+      </div>
       <div className="friendList__item__right">
         <svg
           onClick={() => setIsOpen(!isOpen)}

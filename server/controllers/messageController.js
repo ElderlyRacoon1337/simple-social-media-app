@@ -1,11 +1,16 @@
 import messageModel from '../models/messageModel.js';
+import conversationModel from '../models/conversationModel.js';
 
 export const createMessage = async (req, res) => {
   try {
     const { conversationId, sender, text } = req.body;
     const newMessage = new messageModel({ conversationId, sender, text });
-
     const savedMessage = await newMessage.save();
+
+    const conversation = await conversationModel.findById(conversationId);
+    conversation.lastMessage = newMessage;
+    await conversationModel.findByIdAndUpdate(conversationId, conversation);
+
     res.json(savedMessage);
   } catch (error) {
     console.log(error);

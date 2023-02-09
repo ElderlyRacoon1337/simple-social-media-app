@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import axios from '../axios';
 import {
   createPost,
@@ -11,7 +11,8 @@ import {
 const CreatePost = ({ user }) => {
   const inputFileRef = useRef(null);
   const dispatch = useDispatch();
-  const location = useLocation();
+  // const location = useLocation();
+  const params = useParams();
   const [imageUrl, setImageUrl] = useState('');
 
   const [inputValue, setInputValue] = useState('');
@@ -19,7 +20,7 @@ const CreatePost = ({ user }) => {
   const handleSubmit = () => {
     axios
       .post('/posts', { text: inputValue, imageUrl })
-      .then((res) => dispatch(fetchPostsByUser(location.pathname)));
+      .then((res) => dispatch(fetchPostsByUser(params.id)));
     setInputValue('');
 
     // dispatch(createPost({ text: inputValue, imageUrl }));
@@ -47,6 +48,7 @@ const CreatePost = ({ user }) => {
           value={inputValue}
           placeholder="Что нового?..."
           type="text"
+          onKeyDown={(e) => (e.code == 'Enter' ? handleSubmit() : '')}
         />
       </div>
       <div className="createPostRight">

@@ -1,9 +1,12 @@
 import axios from '../axios';
 import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import { io } from 'socket.io-client';
+import ConversatioinHeaderSkeleton from '../components/skeletons/ConversatioinHeaderSkeleton';
+import ConversatioinSkeleton from '../components/skeletons/ConversatioinSkeleton';
+import { fetchProfileData } from '../redux/slices/userSlice';
 
 const Conversation = () => {
   const user = useSelector((state) => state.user.userData);
@@ -12,11 +15,19 @@ const Conversation = () => {
   const [conversations, setConversations] = useState([]);
   const [value, setValue] = useState('');
   const areaRef = useRef(null);
+  const input = useRef(null);
   const [arrivalMessage, setArrivalMessage] = useState('');
   const currentConversation = conversations.find(
     (el) => el._id == conversationId.id
   );
+  const [isLoading, setIsLoading] = useState(true);
   const socket = useRef();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchProfileData(user._id));
+  }, [user._id]);
 
   useEffect(() => {
     socket.current = io('ws://localhost:8900');
@@ -30,7 +41,8 @@ const Conversation = () => {
       // });
       axios
         .get('/messages/' + conversationId.id)
-        .then((res) => setMessages(res.data));
+        .then((res) => setMessages(res.data))
+        .then((res) => setIsLoading(false));
     });
 
     return () => {
@@ -48,9 +60,7 @@ const Conversation = () => {
     if (!user._id) return;
     if (!socket) return;
     socket.current.emit('addUser', user._id);
-    socket.current.on('getUsers', (users) => {
-      console.log(users);
-    });
+    socket.current.on('getUsers', (users) => {});
   }, [socket, user._id]);
 
   useEffect(() => {
@@ -67,7 +77,10 @@ const Conversation = () => {
   useEffect(() => {
     axios
       .get('/messages/' + conversationId.id)
-      .then((res) => setMessages(res.data));
+      .then((res) => setMessages(res.data))
+      .then((res) => setIsLoading(false));
+
+    input.current.focus();
   }, []);
 
   const sendHandler = async () => {
@@ -78,7 +91,8 @@ const Conversation = () => {
     });
     await axios
       .get('/messages/' + conversationId.id)
-      .then((res) => setMessages(res.data));
+      .then((res) => setMessages(res.data))
+      .then((res) => setIsLoading(false));
     setValue('');
 
     const receiverId = currentConversation.members.find(
@@ -98,57 +112,125 @@ const Conversation = () => {
       <div className="conversation">
         <div className="conversationLeft block">
           <div className="conversation__top">
-            <Link to="/messenger" className="back">
-              <p>Назад</p>
-            </Link>
-            <p className="fullName">
-              {user._id == currentConversation?.members[1]._id
-                ? currentConversation?.members[0].fullName
-                : currentConversation?.members[1].fullName}
-            </p>
-            <img
-              src={
-                user._id == currentConversation?.members[1]._id
-                  ? currentConversation?.members[0].avatarUrl
-                  : currentConversation?.members[1].avatarUrl
-              }
-              alt=""
-            />
+            {!isLoading ? (
+              <>
+                <Link to="/messenger" className="back">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 19.5L8.25 12l7.5-7.5"
+                    />
+                  </svg>
+                  <p>Назад</p>
+                </Link>
+                <p className="fullName">
+                  {user._id == currentConversation?.members[1]._id
+                    ? currentConversation?.members[0].fullName
+                    : currentConversation?.members[1].fullName}
+                </p>
+                <img
+                  src={
+                    user._id == currentConversation?.members[1]._id
+                      ? currentConversation?.members[0].avatarUrl
+                      : currentConversation?.members[1].avatarUrl
+                  }
+                  alt=""
+                />
+              </>
+            ) : (
+              <ConversatioinHeaderSkeleton />
+            )}
           </div>
 
           <div ref={areaRef} className="conversation__content">
-            {messages.length ? (
-              messages?.map((message) => {
-                if (message.sender._id == user._id) {
-                  return (
-                    <div className="messageToMe">
-                      <img src={message.sender.avatarUrl} alt="" />
-                      <div className="messageText">
-                        <p className="creator">{message.sender.fullName}</p>
-                        <p>{message.text}</p>
+            {!isLoading ? (
+              messages.length ? (
+                messages?.map((message, i) => {
+                  if (message.sender._id !== messages[i - 1]?.sender?._id) {
+                    return (
+                      <div className="messageToMe">
+                        <Link to={`/user/${message.sender._id}`} className="">
+                          <img src={message.sender.avatarUrl} alt="" />
+                        </Link>
+                        <div className="messageText">
+                          <div className="flex">
+                            <Link
+                              to={`/user/${message.sender._id}`}
+                              className="creator"
+                            >
+                              {message.sender.fullName}
+                            </Link>
+                            <p className="date">
+                              {new Date(message.createdAt).toLocaleString(
+                                'ru',
+                                {
+                                  hour: 'numeric',
+                                  minute: 'numeric',
+                                }
+                              )}
+                            </p>
+                          </div>
+                          <p>{message.text}</p>
+                        </div>
                       </div>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div className="messageToMe">
-                      <img src={message.sender.avatarUrl} alt="" />
-                      <div className="messageText">
-                        <p className="creator">{message.sender.fullName}</p>
-                        <p>{message.text}</p>
+                    );
+                  } else {
+                    return (
+                      <div className="messageToMeAgain">
+                        {/* <img src={message.sender.avatarUrl} alt="" /> */}
+                        <div className="messageTextAgain">
+                          {/* <p className="creator">
+                        {message.sender.fullName}
+                        <span>
+                          {new Date(message.createdAt).toLocaleString('ru', {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          })}
+                        </span>
+                      </p> */}
+                          <p>{message.text}</p>
+                        </div>
                       </div>
-                    </div>
-                  );
-                }
-              })
+                    );
+                  }
+                })
+              ) : (
+                <p className="empty">Здесь пока нет сообщений</p>
+              )
             ) : (
-              <p className="empty">Здесь пока нет сообщений</p>
+              <>
+                {/* <div className="messageToMe">
+                  <ConversatioinSkeleton />
+                </div>
+                <div className="messageToMe">
+                  <ConversatioinSkeleton />
+                </div>
+                <div className="messageToMe">
+                  <ConversatioinSkeleton />
+                </div>
+                <div className="messageToMe">
+                  <ConversatioinSkeleton />
+                </div>
+                <div className="messageToMe">
+                  <ConversatioinSkeleton />
+                </div> */}
+              </>
             )}
           </div>
           <div className="conversation__bottom">
             <input
+              ref={input}
               value={value}
               onChange={(e) => setValue(e.target.value)}
+              onKeyDown={(e) => (e.code == 'Enter' ? sendHandler() : '')}
               type="text"
               placeholder="Введите сообщение..."
             />

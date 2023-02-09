@@ -12,6 +12,7 @@ import EditProfile from './pages/EditProfile';
 import Friends from './pages/Friends';
 import Messenger from './pages/Messenger';
 import Conversation from './pages/Conversation';
+import Footer from './components/Footer';
 
 function App() {
   const isAuth = useSelector((state) =>
@@ -21,8 +22,6 @@ function App() {
   const user = useSelector((state) => state.user.userData);
 
   const dispatch = useDispatch();
-
-  const token = localStorage.getItem('token');
 
   useEffect(() => {
     dispatch(getMe());
@@ -35,9 +34,18 @@ function App() {
         <div className="container">
           <div className="content">
             <Routes>
-              <Route path="/messenger" element={<Messenger />} />
-              <Route path="/user/edit" element={<EditProfile />} />
-              <Route path="/conversation/:id" element={<Conversation />} />
+              <Route
+                path="/messenger"
+                element={isAuth ? <Messenger /> : <Auth />}
+              />
+              <Route
+                path="/user/edit"
+                element={isAuth ? <EditProfile /> : <Auth />}
+              />
+              <Route
+                path="/conversation/:id"
+                element={isAuth ? <Conversation /> : <Auth />}
+              />
               <Route
                 path="/"
                 element={
@@ -56,6 +64,7 @@ function App() {
             </Routes>
           </div>
         </div>
+        {/* <Footer /> */}
       </div>
     </BrowserRouter>
   );

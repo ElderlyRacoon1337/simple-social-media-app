@@ -4,14 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchPosts, setPostsLoading } from '../redux/slices/postsSlice';
 import PostSkeleton from '../components/skeletons/PostSkeleton';
 import Navigation from '../components/Navigation';
+import { fetchProfileData } from '../redux/slices/userSlice';
 
 const News = () => {
   const posts = useSelector((state) => state.posts.posts.data);
   const dispatch = useDispatch();
   const isPostsLoading = useSelector((state) => state.posts.isPostsLoading);
-  // const isPostsLoading = true;
+  const user = useSelector((state) => state.user.userData);
 
-  // const isPostsLoading = true;
+  useEffect(() => {
+    dispatch(fetchProfileData(user._id));
+  }, [user._id]);
 
   useEffect(() => {
     dispatch(fetchPosts());

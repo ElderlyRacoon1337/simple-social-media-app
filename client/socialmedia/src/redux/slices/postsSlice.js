@@ -9,7 +9,7 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
 export const fetchPostsByUser = createAsyncThunk(
   'posts/fetchMyPosts',
   async (id) => {
-    const { data } = await axios.get(`${id}/posts`);
+    const { data } = await axios.get(`user/${id}/posts`);
     return data;
   }
 );

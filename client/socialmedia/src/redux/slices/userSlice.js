@@ -19,7 +19,7 @@ export const getMe = createAsyncThunk('user', async () => {
 });
 
 export const fetchProfileData = createAsyncThunk('user/data', async (id) => {
-  const { data } = await axios.get(`${id}`);
+  const { data } = await axios.get(`user/${id}`);
   return data;
 });
 
@@ -27,7 +27,7 @@ const initialState = {
   userData: {},
   currentProfileData: {},
   isOwn: false,
-  isProfileLoading: false,
+  isProfileLoading: true,
 };
 
 const userSlice = createSlice({

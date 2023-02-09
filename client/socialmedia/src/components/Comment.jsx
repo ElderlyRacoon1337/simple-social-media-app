@@ -56,12 +56,11 @@ const Comment = ({
             <div className="comment-createdAt">
               {commentData.createdAt.length
                 ? new Date(commentData.createdAt).toLocaleString('ru', {
-                    year: 'numeric',
+                    // year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                     hour: 'numeric',
                     minute: 'numeric',
-                    second: 'numeric',
                   })
                 : 'Несколько секунд назад'}
             </div>

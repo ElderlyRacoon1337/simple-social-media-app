@@ -5,9 +5,12 @@
 body {
   background-color: var(--grey-1);
 
+  position: relative;
+  min-height: 100vh;
   font-weight: 600;
 
   .wrapper {
+    // padding-bottom: 50px;
     button {
       cursor: pointer;
     }
@@ -31,11 +34,20 @@ body {
         font-weight: 900;
         font-size: $font-size-l;
         font-size: $base-font-size * 1.3;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        // padding: 0 5px;
 
+        &:hover {
+          // background-color: var(--grey-2);
+          // color: var(--text);
+        }
         svg {
           position: relative;
           top: 2px;
           left: 8px;
+          color: var(--text);
         }
         span {
           color: var(--logos);
@@ -45,10 +57,6 @@ body {
           padding: 7px;
           border-radius: 10px;
           margin-right: 3px;
-
-          &:hover {
-            background-color: var(--grey-1);
-          }
         }
         // border-radius: 10px;
       }
@@ -72,6 +80,12 @@ body {
           justify-content: space-between;
           background-color: transparent;
           border: none;
+          height: 100%;
+          padding: 0 5px;
+
+          &:hover {
+            background-color: var(--grey-2);
+          }
 
           .header__fullName {
             padding: 0 5px;
@@ -141,9 +155,10 @@ body {
 
         .settings__popup {
           position: absolute;
+          // width: 100%;
           top: 50px;
           right: -46px;
-          width: 150px;
+          // width: 150px;
           background-color: var(--whiteD);
           border-radius: 0 0 10px 10px;
           display: flex;
@@ -161,7 +176,11 @@ body {
 
           .popup-element {
             text-align: center;
-            width: 150px;
+            // width: 150px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            display: flex;
             color: var(--text);
             padding: 10px;
             white-space: nowrap;
@@ -484,6 +503,7 @@ body {
               width: 160px;
               white-space: nowrap;
               color: var(--text);
+              cursor: pointer;
 
               &:hover {
                 background-color: var(--grey-2);
@@ -706,6 +726,7 @@ body {
 
       .button {
         margin-left: 10px;
+        padding: 13px;
       }
     }
   }
@@ -872,6 +893,10 @@ body {
 .friends {
   flex: 1;
   display: flex;
+
+  .skeleton {
+    // margin-top: 50px;
+  }
   .innerFriends {
     flex: 0 0 60%;
   }
@@ -879,6 +904,11 @@ body {
   .title {
     margin-bottom: 10px;
     color: var(--text);
+
+    span {
+      color: var(--text-grey);
+      margin-left: 5px;
+    }
   }
 
   .friendList {
@@ -909,11 +939,25 @@ body {
         .fullName {
           margin-bottom: 10px;
           color: var(--text);
+          display: block;
+          &:hover {
+            text-decoration: underline;
+          }
         }
 
         .status {
           font-size: $font-size-s;
           color: var(--text-grey);
+        }
+
+        .sendMessage {
+          color: var(--logos);
+          font-size: $font-size-s;
+          margin-top: 10px;
+          cursor: pointer;
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
 
@@ -961,6 +1005,18 @@ body {
 
   .conversations {
     flex: 0 0 60%;
+    min-height: 85vh;
+    position: relative;
+
+    .empty {
+      position: absolute;
+      top: 250px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: var(--text-grey);
+      font-size: $font-size-s * 1.1;
+    }
 
     .search {
       // border-bottom: 1px solid var(--border);
@@ -979,6 +1035,7 @@ body {
         color: var(--text);
         border: none;
         padding: 5px;
+        width: 100%;
       }
     }
 
@@ -998,13 +1055,24 @@ body {
         }
       }
       .conversation__center {
+        padding-top: 4px;
         .fullName {
           color: var(--text);
           margin-bottom: 7px;
+          font-size: $font-size-s * 1.1;
         }
         .lastMessage {
           color: var(--text-grey);
-          font-size: $font-size-s;
+          font-size: $font-size-s * 1.1;
+          display: flex;
+          align-items: center;
+
+          img {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            margin-right: 10px;
+          }
         }
       }
       .conversation__right {
@@ -1033,10 +1101,42 @@ body {
       justify-content: space-between;
       border-bottom: 1px solid var(--border);
       padding-bottom: 10px;
+      position: relative;
+
+      .fullName {
+        position: absolute;
+        text-align: center;
+        z-index: 1;
+        right: 0;
+        left: 0;
+      }
 
       .back {
+        display: flex;
+        align-items: center;
+        z-index: 2;
+        height: 100%;
+        // padding: 5px;
+
+        &:hover {
+          svg {
+            color: var(--text);
+          }
+          p {
+            color: var(--text);
+          }
+        }
+
+        svg {
+          width: 20px;
+          position: relative;
+          left: -4px;
+          color: var(--text-grey);
+        }
+
         p {
           color: var(--text-grey);
+          font-size: $font-size-s * 1.1;
         }
       }
 
@@ -1053,9 +1153,13 @@ body {
     .conversation__content {
       display: flex;
       flex-direction: column;
-      // justify-content: flex-end;
       position: relative;
-      overflow: scroll;
+      overflow-y: auto;
+      flex-flow: column nowrap;
+
+      .messageToMe:first-child {
+        margin-top: auto !important;
+      }
 
       .empty {
         text-align: center;
@@ -1070,14 +1174,42 @@ body {
       padding-top: 10px;
       flex: 1;
       font-size: $font-size-s * 1.1;
+      .messageToMeAgain {
+        padding: 7px 10px;
+
+        .messageTextAgain p {
+          margin-left: 45px;
+          color: var(--text);
+        }
+      }
       .messageToMe {
         display: flex;
         align-items: center;
-        padding: 15px 10px;
+        padding: 7px 10px;
+        margin-top: 10px;
 
+        .date {
+          color: var(--text-grey);
+          margin-left: 7px;
+          font-size: $font-size-s * 0.9;
+          position: relative;
+          bottom: 2px;
+        }
+        .flex {
+          display: flex;
+          align-items: center;
+        }
         .creator {
-          margin-bottom: 4px;
+          margin-bottom: 5px;
           color: var(--logos);
+          display: block;
+
+          &:hover {
+            text-decoration: underline;
+            span {
+              text-decoration: none;
+            }
+          }
         }
         p {
           color: var(--text);
@@ -1113,6 +1245,10 @@ body {
       align-items: center;
       padding-top: 10px;
 
+      .button {
+        padding: 13px;
+      }
+
       input {
         background-color: transparent;
         border-radius: 10px;
@@ -1123,5 +1259,31 @@ body {
         padding: 10px;
       }
     }
+  }
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--grey-2);
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70px;
+
+  .footerInner {
+    display: flex;
+    align-items: center;
+  }
+
+  p {
+    color: var(--text);
+    margin-right: 10px;
+  }
+  a {
+    color: var(--logos);
   }
 }

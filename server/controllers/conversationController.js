@@ -5,6 +5,15 @@ export const createConversation = async (req, res) => {
     const oldConversation = await conversationModel.findOne({
       members: [req.body.senderId, req.body.recieverId],
     });
+    if (!oldConversation) {
+      const oldConversation = await conversationModel.findOne({
+        members: [req.body.recieverId, req.body.senderId],
+      });
+      if (oldConversation) {
+        res.json(oldConversation);
+        return;
+      }
+    }
     if (oldConversation) {
       res.json(oldConversation);
       return;
@@ -27,10 +36,13 @@ export const getConversations = async (req, res) => {
       .find({
         members: { $in: [req.params.userId] },
       })
-      .populate('members');
+      // .sort([['lastMessage.createdAt', 1]])
+      .populate('members')
+      .populate('lastMessage.sender');
 
     res.json(conversations);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Не удалось получить переписки' });
   }
 };

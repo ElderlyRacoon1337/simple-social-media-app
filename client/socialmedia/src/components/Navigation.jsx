@@ -71,7 +71,7 @@ const Navigation = () => {
         </svg>
         <p>Друзья</p>
       </Link>
-      <a className="navigation__element">
+      {/* <a className="navigation__element">
         <svg
           fill="none"
           viewBox="0 0 24 24"
@@ -86,7 +86,7 @@ const Navigation = () => {
           />
         </svg>
         <p>Фото</p>
-      </a>
+      </a> */}
     </ul>
   );
 };

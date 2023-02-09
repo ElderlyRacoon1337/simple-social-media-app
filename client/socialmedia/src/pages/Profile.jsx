@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Post from '../components/Post';
 import axios from '../axios';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import CreatePost from '../components/CreatePost';
 import { fetchPostsByUser, setPostsLoading } from '../redux/slices/postsSlice';
 import decode from 'jwt-decode';
@@ -19,7 +19,6 @@ import PostSkeleton from '../components/skeletons/PostSkeleton';
 import Navigation from '../components/Navigation';
 
 const Profile = () => {
-  const location = useLocation();
   const dispatch = useDispatch();
   const postsByUser = useSelector((state) => state.posts.postsByUser);
   const profileData = useSelector((state) => state.user.currentProfileData);
@@ -31,6 +30,7 @@ const Profile = () => {
   let isInvited = false;
   let isInvitedMe = false;
   let isMyFriend = false;
+  const params = useParams();
 
   const token = localStorage.getItem('token');
   const decodedToken = decode(token);
@@ -77,16 +77,16 @@ const Profile = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchProfileData(location.pathname));
+    dispatch(fetchProfileData(params.id));
 
     window.scrollTo(0, 0);
 
-    dispatch(fetchPostsByUser(location.pathname));
+    dispatch(fetchPostsByUser(params.id));
 
     return () => {
       dispatch(clearProfileData());
     };
-  }, [location.pathname]);
+  }, [params.id]);
 
   const handleInviteFriend = () => {
     axios.post('user/inviteToFriends', { id: profileData._id });

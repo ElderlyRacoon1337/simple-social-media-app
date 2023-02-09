@@ -132,12 +132,11 @@ const Post = ({ postData }) => {
                 <p>{postData.user.fullName || userData.fullName}</p>
                 <div className="createdAt">
                   {new Date(postData.createdAt).toLocaleString('ru', {
-                    year: 'numeric',
+                    // year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                     hour: 'numeric',
                     minute: 'numeric',
-                    second: 'numeric',
                   })}
                 </div>
               </div>
@@ -146,7 +145,6 @@ const Post = ({ postData }) => {
               <div className="postTopRight">
                 <svg
                   onClick={() => setIsOpen(!isOpen)}
-                  // onMouseLeave={() => setIsOpen(false)}
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
@@ -249,6 +247,7 @@ const Post = ({ postData }) => {
             <div className="addComment">
               <img src={userData.avatarUrl} alt="" />
               <input
+                onKeyDown={(e) => (e.code == 'Enter' ? handleAddComment() : '')}
                 ref={inputRef}
                 type="text"
                 value={commentValue}
