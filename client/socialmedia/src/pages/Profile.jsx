@@ -89,15 +89,21 @@ const Profile = () => {
   }, [params.id]);
 
   const handleInviteFriend = () => {
-    axios.post('user/inviteToFriends', { id: profileData._id });
+    axios
+      .post('user/inviteToFriends', { id: profileData._id })
+      .then((res) => dispatch(fetchProfileData(params.id)));
   };
 
   const handleAddFriend = () => {
-    axios.post('user/confirmFriendship', { id: profileData._id });
+    axios
+      .post('user/confirmFriendship', { id: profileData._id })
+      .then((res) => dispatch(fetchProfileData(params.id)));
   };
 
   const handleDeleteFriend = () => {
-    axios.post('user/deleteFriend', { id: profileData._id });
+    axios
+      .post('user/deleteFriend', { id: profileData._id })
+      .then((res) => dispatch(fetchProfileData(params.id)));
   };
 
   const createConversation = async () => {
@@ -196,7 +202,8 @@ const Profile = () => {
                 </div>
               )
             ) : (
-              <ProfileRightSkeleton />
+              // <ProfileRightSkeleton />
+              ''
             )}
           </div>
         </div>

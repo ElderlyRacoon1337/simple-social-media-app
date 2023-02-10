@@ -118,7 +118,7 @@ const Messenger = () => {
             )
           ) : (
             <>
-              <div className="conversationElement">
+              {/* <div className="conversationElement">
                 <MessengerSkeleton />
               </div>
               <div className="conversationElement">
@@ -141,7 +141,7 @@ const Messenger = () => {
               </div>
               <div className="conversationElement">
                 <MessengerSkeleton />
-              </div>
+              </div> */}
             </>
           )}
         </div>

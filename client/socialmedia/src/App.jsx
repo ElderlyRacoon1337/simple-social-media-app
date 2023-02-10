@@ -13,6 +13,7 @@ import Friends from './pages/Friends';
 import Messenger from './pages/Messenger';
 import Conversation from './pages/Conversation';
 import Footer from './components/Footer';
+import NewsPost from './pages/NewsPost';
 
 function App() {
   const isAuth = useSelector((state) =>
@@ -60,6 +61,7 @@ function App() {
                 }
               />
               <Route path="/news" element={<News />} />
+              <Route path="/news:post" element={<NewsPost />} />
               <Route path="/friends" element={<Friends />} />
             </Routes>
           </div>

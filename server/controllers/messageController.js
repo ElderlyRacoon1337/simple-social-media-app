@@ -5,13 +5,18 @@ export const createMessage = async (req, res) => {
   try {
     const { conversationId, sender, text } = req.body;
     const newMessage = new messageModel({ conversationId, sender, text });
-    const savedMessage = await newMessage.save();
 
     const conversation = await conversationModel.findById(conversationId);
     conversation.lastMessage = newMessage;
-    await conversationModel.findByIdAndUpdate(conversationId, conversation);
+    const own = conversation.members.find((el) => el._id == req.userId);
+    if (own) {
+      await conversationModel.findByIdAndUpdate(conversationId, conversation);
+      const savedMessage = await newMessage.save();
 
-    res.json(savedMessage);
+      res.json(savedMessage);
+    } else {
+      res.json({ message: 'No)' });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Не удалось создать сообщение' });
@@ -25,9 +30,17 @@ export const getMessages = async (req, res) => {
         conversationId: req.params.conversationId,
       })
       .populate('sender');
-
-    res.json(messages);
+    const conversation = await conversationModel.findById(
+      req.params.conversationId
+    );
+    const own = conversation.members.find((el) => el._id == req.userId);
+    if (own) {
+      res.json(messages);
+    } else {
+      res.json({ message: 'no' });
+    }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Не удалось получить сообщения' });
   }
 };

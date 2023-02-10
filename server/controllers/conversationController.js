@@ -36,7 +36,6 @@ export const getConversations = async (req, res) => {
       .find({
         members: { $in: [req.params.userId] },
       })
-      // .sort([['lastMessage.createdAt', 1]])
       .populate('members')
       .populate('lastMessage.sender');
 
