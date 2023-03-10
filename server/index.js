@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import multer from 'multer';
-import { Server } from 'socket.io';
+// import { Server } from 'socket.io';
 import http from 'http';
 
 import postRoutes from './routes/posts.js';

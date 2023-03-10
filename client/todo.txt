@@ -1,0 +1,9 @@
+add search
+fix page structure
+redo redux logic
+add notifications
+add posts dynamic loading
+redo socket chat
+online
+typing
+validations

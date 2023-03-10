@@ -35,8 +35,8 @@ export const createPost = async (req, res) => {
       ...post,
       user: req.userId,
     });
-    await newPost.save();
-    res.json({ ...newPost._doc });
+    await (await newPost.save()).populate('user');
+    res.json(newPost);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Не удалось создать пост' });
